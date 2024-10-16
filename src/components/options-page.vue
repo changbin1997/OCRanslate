@@ -41,10 +41,10 @@
         </div>
         <div class="mb-3">
           <label for="tencent-ocr-language-selected" class="form-label">腾讯 OCR 默认识别的语言</label>
-          <select id="tencent-ocr-language-selected" class="form-select" v-model="optionsSelected.tencentOcrLanguageSelected">
+          <select aria-describedby="tencent-ocr-language-description" id="tencent-ocr-language-selected" class="form-select" v-model="optionsSelected.tencentOcrLanguageSelected">
             <option v-for="(item, index) of tencentOcrLanguageList" :key="index" v-bind:value="item.code">{{item.name}}</option>
           </select>
-          <p class="mt-3">注意，只有普通的腾讯云通用印刷体识别支持手动设置语言，其它的腾讯识别接口设置语言无效！</p>
+          <p class="mt-3" id="tencent-ocr-language-description">注意，只有普通的腾讯云通用印刷体识别支持手动设置语言，其它的腾讯识别接口设置语言无效！</p>
         </div>
         <div class="mb-3">
           <label for="tencent-ocr-region-selected" class="form-label">腾讯 OCR 服务器地域</label>
@@ -108,13 +108,13 @@
       <div aria-label="翻译引擎设置" role="group">
         <div class="mb-3">
           <label for="translation-provider" class="form-label">默认使用的翻译引擎</label>
-          <select id="translation-provider" class="form-select" v-model="optionsSelected.translationProvider">
+          <select aria-describedby="translation-provider-description" id="translation-provider" class="form-select" v-model="optionsSelected.translationProvider">
             <option value="baidu">百度翻译</option>
             <option value="tencent">腾讯翻译</option>
             <option value="xunfei">讯飞翻译</option>
             <option value="youdao">有道翻译</option>
           </select>
-          <p class="mt-3">腾讯、讯飞、有道的 OCR 和翻译使用的是相同的密钥信息，只需要开通功能就可以使用了。</p>
+          <p class="mt-3" id="translation-provider-description">腾讯、讯飞、有道的 OCR 和翻译使用的是相同的密钥信息，只需要开通功能就可以使用了。</p>
         </div>
       </div>
       <!--OCR语音设置-->
@@ -151,13 +151,13 @@
           <input type="range" class="form-range" id="translation-speed" max="10" min="1" v-model="optionsSelected.translationVoiceSpeed">
         </div>
         <div class="mb-3">
-          <label for="ocr-voice-library" class="form-label">发音人</label>
-          <select id="translation-voice-library" class="form-select" v-model="optionsSelected.translationVoiceLibrarySelected">
+          <label for="translation-voice-library" class="form-label">发音人</label>
+          <select aria-describedby="translation-voice-library-description" id="translation-voice-library" class="form-select" v-model="optionsSelected.translationVoiceLibrarySelected">
             <option value="auto">根据语言自动选择</option>
             <option v-for="(item, index) of voiceLibraryList" :key="index" v-bind:value="item.name">{{item.name}} {{item.lang}}</option>
           </select>
         </div>
-        <p class="mt-3">如果您对发音人没有特别需求的话，可以使用根据语言自动选择发音人。</p>
+        <p class="mt-3" id="translation-voice-library-description">如果您对发音人没有特别需求的话，可以使用根据语言自动选择发音人。</p>
       </div>
       <div class="mb-4"></div>
       <!--快捷键-->
@@ -172,9 +172,9 @@
         </div>
         <div class="mb-3">
           <label for="key1-name" class="form-label">快捷键1要使用的快捷键</label>
-          <input type="text" id="key1-name" class="form-control" placeholder="在这里按下要使用的快捷键" @keydown="getKeyName($event, 'key1Name')" v-model="optionsSelected.key1Name" readonly :disabled="!optionsSelected.key1Enable">
+          <input aria-describedby="key1-name-description" type="text" id="key1-name" class="form-control" placeholder="在这里按下要使用的快捷键" @keydown="getKeyName($event, 'key1Name')" v-model="optionsSelected.key1Name" readonly :disabled="!optionsSelected.key1Enable">
         </div>
-        <p class="mt-3">你可以在上方的表单中按下需要使用的按键来更改快捷键设置</p>
+        <p class="mt-3" id="key1-name-description">你可以在上方的表单中按下需要使用的按键来更改快捷键设置</p>
         <div class="mb-3">
           <label for="key-f1-function" class="form-label">快捷键1使用的接口</label>
           <select id="key-f1-function" class="form-select" v-model="optionsSelected.key1Function" :disabled="!optionsSelected.key1Enable">
@@ -198,9 +198,9 @@
         </div>
         <div class="mb-3">
           <label for="key2-name" class="form-label">快捷键2要使用的快捷键</label>
-          <input type="text" id="key2-name" class="form-control" placeholder="在这里按下要使用的快捷键" @keydown="getKeyName($event, 'key2Name')" v-model="optionsSelected.key2Name" readonly :disabled="!optionsSelected.key2Enable">
+          <input aria-describedby="key2-name-description" type="text" id="key2-name" class="form-control" placeholder="在这里按下要使用的快捷键" @keydown="getKeyName($event, 'key2Name')" v-model="optionsSelected.key2Name" readonly :disabled="!optionsSelected.key2Enable">
         </div>
-        <p class="mt-3">你可以在上方的表单中按下需要使用的按键来更改快捷键设置</p>
+        <p class="mt-3" id="key2-name-description">你可以在上方的表单中按下需要使用的按键来更改快捷键设置</p>
         <div class="mb-3">
           <label for="key-f2-function" class="form-label">快捷键2使用的接口</label>
           <select id="key-f2-function" class="form-select" v-model="optionsSelected.key2Function" :disabled="!optionsSelected.key2Enable">
@@ -228,9 +228,9 @@
         </div>
         <div class="mb-3">
           <label for="specific-areaKey-name" class="form-label">指定区域识别要使用的快捷键</label>
-          <input type="text" id="specific-areaKey-name" class="form-control" placeholder="在这里按下要使用的快捷键" @keydown="getKeyName($event, 'specificAreaKeyName')" v-model="optionsSelected.specificAreaKeyName" readonly :disabled="!optionsSelected.specificArea">
+          <input aria-describedby="specific-areaKey-name-description" type="text" id="specific-areaKey-name" class="form-control" placeholder="在这里按下要使用的快捷键" @keydown="getKeyName($event, 'specificAreaKeyName')" v-model="optionsSelected.specificAreaKeyName" readonly :disabled="!optionsSelected.specificArea">
         </div>
-        <p class="mt-3">你可以在上方的表单中按下需要使用的按键来更改快捷键设置</p>
+        <p class="mt-3" id="specific-areaKey-name-description">你可以在上方的表单中按下需要使用的按键来更改快捷键设置</p>
         <div class="mb-3">
           <label for="specific-area-left" class="form-label">识别区域左侧起始位置</label>
           <input type="number" id="specific-area-left" class="form-control" placeholder="识别区域左侧起始位置（px）" v-model="optionsSelected.specificAreaLeft" :disabled="!optionsSelected.specificArea">
@@ -299,9 +299,9 @@
         </div>
         <div class="mb-3">
           <label for="clipboard-translation-key-name" class="form-label">翻译剪贴板要使用的快捷键</label>
-          <input type="text" id="clipboard-translation-key-name" class="form-control" placeholder="在这里按下要使用的快捷键" @keydown="getKeyName($event, 'clipboardTranslationKeyName')" v-model="optionsSelected.clipboardTranslationKeyName" readonly :disabled="!optionsSelected.clipboardTranslation">
+          <input aria-describedby="clipboard-translation-key-name-description" type="text" id="clipboard-translation-key-name" class="form-control" placeholder="在这里按下要使用的快捷键" @keydown="getKeyName($event, 'clipboardTranslationKeyName')" v-model="optionsSelected.clipboardTranslationKeyName" readonly :disabled="!optionsSelected.clipboardTranslation">
         </div>
-        <p class="mt-3">你可以在上方的表单中按下需要使用的按键来更改快捷键设置</p>
+        <p class="mt-3" id="clipboard-translation-key-name-description">你可以在上方的表单中按下需要使用的按键来更改快捷键设置</p>
       </div>
       <div class="mb-4"></div>
       <div>
