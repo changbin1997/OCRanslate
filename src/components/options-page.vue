@@ -1,8 +1,25 @@
 <template>
   <div id="options-page">
-    <div class="options-box p-3">
+    <div class="directory-box p-3">
+      <p class="mb-2"><b>快速跳转</b></p>
+      <ul class="directory-list" aria-label="快速跳转">
+        <li><a href="javascript:;" @click="scrollToSection('#baidu-ocr-title')">百度 OCR 接口</a></li>
+        <li><a href="javascript:;" @click="scrollToSection('#tencent-api-title')">腾讯 API 接口</a></li>
+        <li><a href="javascript:;" @click="scrollToSection('#xunfei-api-title')">科大讯飞 API 接口</a></li>
+        <li><a href="javascript:;" @click="scrollToSection('#youdao-api-title')">有道智云 API 接口</a></li>
+        <li><a href="javascript:;" @click="scrollToSection('#baidu-translation-title')">百度翻译接口</a></li>
+        <li><a href="javascript:;" @click="scrollToSection('#translation-provider-title')">翻译引擎设置</a></li>
+        <li><a href="javascript:;" @click="scrollToSection('#ocr-volume-title')">OCR 语音朗读设置</a></li>
+        <li><a href="javascript:;" @click="scrollToSection('#translation-volume-title')">翻译语音朗读设置</a></li>
+        <li><a href="javascript:;" @click="scrollToSection('#key-title')">全局快捷键</a></li>
+        <li><a href="javascript:;" @click="scrollToSection('#specific-area-title')">指定区域识别</a></li>
+        <li><a href="javascript:;" @click="scrollToSection('#automation-title')">自动执行（用于手动选择图片和翻译）</a></li>
+        <li><a href="javascript:;" @click="scrollToSection('#clipboard-translation-title')">自动翻译剪贴板的文字</a></li>
+      </ul>
+    </div>
+    <div class="options-box p-3 border-start">
       <!--百度 OCR 接口-->
-      <p class="mb-2"><b>百度 OCR 接口</b></p>
+      <p class="mb-2" id="baidu-ocr-title"><b>百度 OCR 接口</b></p>
       <div aria-label="百度 OCR 接口" role="group">
         <div class="mb-3">
           <label for="baidu-app-id" class="form-label">App ID</label>
@@ -25,7 +42,7 @@
       </div>
       <div class="mb-4"></div>
       <!--腾讯 OCR 接口-->
-      <p class="mb-2"><b>腾讯 API 接口</b></p>
+      <p class="mb-2" id="tencent-api-title"><b>腾讯 API 接口</b></p>
       <div aria-label="腾讯 API 接口" role="group">
         <div class="mb-3">
           <label for="tencent-app-id" class="form-label">App ID</label>
@@ -55,7 +72,7 @@
       </div>
       <div class="mb-4"></div>
       <!--讯飞 OCR 接口-->
-      <p class="mb-2"><b>科大讯飞 API 接口</b></p>
+      <p class="mb-2" id="xunfei-api-title"><b>科大讯飞 API 接口</b></p>
       <div aria-label="科大讯飞 API 接口" role="group">
         <div class="mb-3">
           <label for="xunfei-app-id" class="form-label">App ID</label>
@@ -72,7 +89,7 @@
       </div>
       <div class="mb-4"></div>
       <!--有道 OCR 接口-->
-      <p class="mb-2"><b>有道智云 API 接口</b></p>
+      <p class="mb-2" id="youdao-api-title"><b>有道智云 API 接口</b></p>
       <div aria-label="有道智云 API 接口" role="group">
         <div class="mb-3">
           <label for="youdao-app-id" class="form-label">App ID</label>
@@ -91,7 +108,7 @@
       </div>
       <div class="mb-4"></div>
       <!--百度翻译接口-->
-      <p class="mb-2"><b>百度翻译接口</b></p>
+      <p class="mb-2" id="baidu-translation-title"><b>百度翻译接口</b></p>
       <div aria-label="百度翻译接口" role="group">
         <div class="mb-3">
           <label for="baidu-translation-app-id" class="form-label">App ID</label>
@@ -104,7 +121,7 @@
       </div>
       <div class="mb-4"></div>
       <!--翻译引擎设置-->
-      <p class="mb-2"><b>翻译引擎设置</b></p>
+      <p class="mb-2" id="translation-provider-title"><b>翻译引擎设置</b></p>
       <div aria-label="翻译引擎设置" role="group">
         <div class="mb-3">
           <label for="translation-provider" class="form-label">默认使用的翻译引擎</label>
@@ -118,7 +135,7 @@
         </div>
       </div>
       <!--OCR语音设置-->
-      <p class="mb-2"><b>OCR 语音朗读设置</b></p>
+      <p class="mb-2" id="ocr-volume-title"><b>OCR 语音朗读设置</b></p>
       <div aria-label="OCR语音朗读" role="group">
         <div class="mb-3">
           <label for="ocr-volume" class="form-label">语音音量</label>
@@ -140,7 +157,7 @@
       </div>
       <div class="mb-4"></div>
       <!--翻译语音朗读设置-->
-      <p class="mb-2"><b>翻译语音朗读设置</b></p>
+      <p class="mb-2" id="translation-volume-title"><b>翻译语音朗读设置</b></p>
       <div aria-label="翻译语音朗读" role="group">
         <div class="mb-3">
           <label for="translation-volume" class="form-label">语音音量</label>
@@ -161,7 +178,7 @@
       </div>
       <div class="mb-4"></div>
       <!--快捷键-->
-      <p class="mb-2"><b>全局快捷键</b></p>
+      <p class="mb-2" id="key-title"><b>全局快捷键</b></p>
       <div aria-label="快捷键" role="group">
         <!--快捷键1-->
         <div class="mb-3">
@@ -218,7 +235,7 @@
       </div>
       <div class="mb-4"></div>
       <!--指定区域识别-->
-      <p class="mb-2"><b>指定区域识别</b></p>
+      <p class="mb-2" id="specific-area-title"><b>指定区域识别</b></p>
       <div aria-label="指定区域识别" role="group">
         <div class="mb-3">
           <div class="form-check">
@@ -266,7 +283,8 @@
           </select>
         </div>
       </div>
-      <p class="mb-2"><b>自动执行（用于手动选择图片和翻译）</b></p>
+      <!--自动执行（用于手动选择图片和翻译）-->
+      <p class="mb-2" id="automation-title"><b>自动执行（用于手动选择图片和翻译）</b></p>
       <div aria-label="自动执行" role="group">
         <div class="mb-3">
           <div class="form-check">
@@ -289,7 +307,7 @@
       </div>
       <div class="mb-4"></div>
       <!--剪贴板翻译-->
-      <p class="mb-2"><b>自动翻译剪贴板的文字</b></p>
+      <p class="mb-2" id="clipboard-translation-title"><b>自动翻译剪贴板的文字</b></p>
       <div aria-label="自动翻译剪贴板的文字" role="group">
         <div class="mb-3">
           <div class="form-check">
@@ -406,6 +424,12 @@ export default {
     }
   },
   methods: {
+    // 目录跳转
+    scrollToSection(titleId) {
+      document.querySelector(titleId).scrollIntoView({
+        behavior: 'smooth'
+      });
+    },
     // 设置快捷键
     async getKeyName(ev, keyIndex) {
       if (ev.key !== 'Tab') ev.preventDefault();
@@ -556,7 +580,25 @@ export default {
 <style scoped>
 #options-page {
   height: 100%;
+  display: flex;
+  justify-content: flex-start;
 }
+/*目录区域*/
+#options-page .directory-box {
+  width: 250px;
+}
+#options-page .directory-list {
+  padding-left: 0;
+  list-style: none;
+}
+#options-page .directory-list li {
+  margin-bottom: 4px;
+}
+#options-page .directory-list a {
+  color: #2780E3;
+  text-decoration: none;
+}
+/*设置区域*/
 #options-page .options-box {
   max-height: 100%;
   overflow-y: auto;
