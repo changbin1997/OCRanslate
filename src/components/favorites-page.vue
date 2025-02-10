@@ -204,7 +204,7 @@ export default {
     }
   },
   created() {
-    document.title = '收藏';
+    document.title = '收藏 - OCRanslate';
     // 获取收藏
     this.getFavorites();
     // 初始化语音朗读

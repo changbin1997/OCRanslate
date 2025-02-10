@@ -1,6 +1,7 @@
 const AipOcrClient = require('baidu-aip-sdk').ocr;
 const HttpClient = require('baidu-aip-sdk').HttpClient;
 const OcrClient = require('tencentcloud-sdk-nodejs').ocr.v20181119.Client;
+const TesseractOcr = require('./TesseractOcr');
 const fs = require('fs');
 const path = require('path');
 const Data = require('./Data');
@@ -163,5 +164,13 @@ module.exports = class Ocr {
     const extnameList = ['.jpg', '.png', '.jpeg'];
     const extname = path.extname(fileName);
     return extnameList.indexOf(extname) >= 0;
+  }
+
+  // Tesseract OCR
+  async tesseract(img) {
+    const tesseractOcr = new TesseractOcr();
+    const result = await tesseractOcr.recognize(img, this.options.tesseractOcrLanguageSelected);
+
+    return result;
   }
 }

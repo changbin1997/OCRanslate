@@ -54,7 +54,7 @@ export default {
     }
   },
   created() {
-    document.title = '历史记录';
+    document.title = '历史记录 - OCRanslate';
   }
 }
 </script>

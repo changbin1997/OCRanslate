@@ -1,8 +1,6 @@
-  OCR 翻译（ocr-translation）是一个使用 Electron 开发的 OCR 文字识别 + 翻译的软件，也是我为了解决个人需求开发的软件。
+  OCR 翻译（OCRanslate）是一个使用 Electron 开发的 OCR 文字识别 + 翻译的软件，也是我为了解决个人需求开发的软件。
 
-软件本身并不完全具备 OCR 识别和翻译的功能，OCR 功能需要调用在线的 OCR 识别服务，翻译也需要调用百度翻译或腾讯翻译。
-
-软件没有内置 API 密钥信息，使用 OCR 功能需要填写相关的 API 密钥信息，使用翻译功能需要填写百度翻译或腾讯翻译的 API 密钥信息。
+软件的 OCR 识别目前支持 TesseractOCR（离线识别）和在线的 OCR 识别服务 API。翻译功能需要调用在线的翻译 API。
 
 下面是 API 申请地址：
 
@@ -12,20 +10,23 @@
 * 有道智云 OCR API [https://ai.youdao.com/product-ocr-print.s](https://ai.youdao.com/product-ocr-print.s)
 * 百度翻译 API：[https://fanyi-api.baidu.com/](https://fanyi-api.baidu.com/)
 * 腾讯机器翻译 API [https://cloud.tencent.com/product/tmt](https://cloud.tencent.com/product/tmt)
+* 有道翻译 API：[https://ai.youdao.com/product-fanyi-text.s](https://ai.youdao.com/product-fanyi-text.s)
+* 讯飞翻译 API：[https://www.xfyun.cn/services/xftrans](https://www.xfyun.cn/services/xftrans)
 
-腾讯的文字识别和翻译使用的是相同的密钥。
+腾讯、有道、讯飞的文字识别和翻译使用的是相同的密钥。
 
 下面是 API 的免费额度说明：
 
 * 百度通用文字识别：每月 1000 次免费
 * 腾讯通用文字识别：每月 1000 次免费
 * 讯飞通用文字识别：注册后免费 10 万次
-* 百度翻译 API：标准版每月 5 万字免费，实名认证可提升到 100 万字
-* 腾讯机器翻译，每月免费 500 万字
+* 百度翻译 - 通用文本翻译：每月 50000 - 1000000 字免费
+* 腾讯机器翻译 - 文本翻译：每月 5000000 字免费
+* 讯飞机器翻译 - 机器翻译：注册后免费 200万字符，有效期一年
 
 以上信息写于 2022 年 8 月 28 日，API 额度可能随时会更改，一切以官网为准。
 
-## 支持的功能
+## 支持的 API
 
 下面是支持的 API 功能：
 
@@ -41,22 +42,30 @@
 * 有道智云 - 通用文字识别
 * 百度翻译 - 通用文本翻译
 * 腾讯机器翻译 - 文本翻译
+* 讯飞机器翻译 - 机器翻译
+* 有道翻译 - 文字翻译
+
+## TesseractOCR
+
+Tesseract 是 Google 开源的 OCR 识别模型，支持全球 100 多种语言的识别，中文识别的准确率相比国内互联网公司提供的在线 OCR 服务来说，可能要稍差一些，英文的准确率还可以。
+
+如果你主要用来识别英文翻译的话，Tesseract 正好合适，英文识别准确率还可以，本地离线识别，不限次数。
 
 ## 使用说明
 
-[Releases](https://github.com/changbin1997/ocr-translation/releases) 中提供了 Windows 安装包 `ocr-translation-win.exe` 和免安装的 `ocr-translation-win-portable.zip` ，安装包安装完成后在桌面会创建快捷方式，免安装的 zip 解压后找到 `ocr-translation.exe` 打开就可以使用。
+[Releases](https://github.com/changbin1997/OCRanslate/releases) 中提供了 Windows 安装包 `OCRanslate-win.exe` 和免安装的 `OCRanslate-win-portable.zip` ，安装包安装完成后在桌面会创建快捷方式，免安装的 zip 解压后找到 `OCRanslate.exe` 打开就可以使用。
 
 如果没有填写任何 OCR API 密钥，进入 OCR 页面就会弹出对话框提示，您可以在设置中填写百度或腾讯的 OCR 密钥，如下：
 
-![ocr-translation的设置页面](screenshot/options-page.jpg)
+![OCRanslate的设置页面](screenshot/options-page.jpg)
 
 填写完成后就可以使用 OCR 识别了，OCR 识别页面如下：
 
-![ocr-translation的OCR识别页面](screenshot/ocr-page.jpg)
+![OCRanslate的OCR识别页面](screenshot/ocr-page.jpg)
 
 右上方可以选择 API 接口，点击左侧选择图片文件，也可以直接把图片文件拖到左侧识别，识别后的文本内容会显示在右侧，如下：
 
-![ocr-translation识别结果](screenshot/ocr-result.jpg)
+![OCRanslate识别结果](screenshot/ocr-result.jpg)
 
 点击 **朗读** 可以朗读识别文本，语音在本地合成，无需等待，不限次数。
 
@@ -66,7 +75,7 @@
 
 你也可以从左侧的侧边栏进入翻译页面，手动输入内容翻译，如下：
 
-![ocr-translation的翻译页面](screenshot/translation-page.jpg)
+![OCRanslate的翻译页面](screenshot/translation-page.jpg)
 
 翻译页面的语音也是在本地合成的。
 
@@ -74,7 +83,7 @@
 
 **收藏** 可以把本次翻译的原文和译文保存到软件的 SQLite 数据库中，在左侧侧边栏的 **收藏**可以查看保存的翻译：
 
-![ocr-translation收藏页面](screenshot/favorites-page.jpg)
+![OCRanslate收藏页面](screenshot/favorites-page.jpg)
 
 ## 选择屏幕区域识别
 
@@ -102,13 +111,13 @@
 
 ## 使用统计
 
-为了避免额度用完导致扣费，OCR翻译还提供了一个历史记录页面来查看使用统计，如下：
+为了避免额度用完导致扣费，OCRanslate 还提供了一个历史记录页面来查看使用统计，如下：
 
-![ocr-translation的记录总览页面](screenshot/history-page.jpg)
+![OCRanslate的记录总览页面](screenshot/history-page.jpg)
 
 你还可以查看更详细的 OCR 或翻译历史记录：
 
-![ocr-translation的OCR历史记录表格](screenshot/table-page.jpg)
+![OCRanslate的OCR历史记录表格](screenshot/table-page.jpg)
 
 ## 注意事项
 

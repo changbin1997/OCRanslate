@@ -242,6 +242,7 @@ module.exports = class Data {
   insertOptions() {
     // 默认选项
     const options = {
+      tesseractOcrLanguageSelected: 'chi_sim',
       youdaoOcrAppID: '',
       youdaoOcrAppKey: '',
       youdaoOcrLanguageSelected: 'auto',

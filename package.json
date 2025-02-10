@@ -1,5 +1,5 @@
 {
-  "name": "ocr-translation",
+  "name": "OCRanslate",
   "author": "changbin1997",
   "version": "1.0.0",
   "description": "一个 OCR 文字识别和翻译的程序",
@@ -49,8 +49,8 @@
     "not dead"
   ],
   "build": {
-    "appId": "ocr-translation",
-    "productName": "ocr-translation",
+    "appId": "OCRanslate",
+    "productName": "OCRanslate",
     "copyright": "Copyright © changbin1997",
     "compression": "maximum",
     "asar": true,
@@ -91,7 +91,9 @@
       "!**/dll/**",
       "!**/vue.config.js",
       "!**/data.db",
-      "!**/screenshot/**"
+      "!**/screenshot/**",
+      "!**/tessdata/**",
+      "!**/release/**"
     ],
     "extraFiles": [
       {
@@ -109,6 +111,18 @@
       {
         "from": "node_modules/screenshot-desktop/lib/win32/app.manifest",
         "to": "resources/app.asar.unpacked/node_modules/screenshot-desktop/lib/win32/app.manifest"
+      },
+      {
+        "from": "tessdata/chi_sim.traineddata",
+        "to": "tessdata/chi_sim.traineddata"
+      },
+      {
+        "from": "tessdata/eng.traineddata",
+        "to": "tessdata/eng.traineddata"
+      },
+      {
+        "from": "tessdata/下载语言模型文件.txt",
+        "to": "tessdata/下载语言模型文件.txt"
       }
     ]
   },
@@ -118,6 +132,7 @@
     "jimp": "^0.22.12",
     "screenshot-desktop": "^1.15.0",
     "sqlite3": "^5.0.10",
-    "tencentcloud-sdk-nodejs": "^4.0.383"
+    "tencentcloud-sdk-nodejs": "^4.0.383",
+    "tesseract.js": "^6.0.0"
   }
 }

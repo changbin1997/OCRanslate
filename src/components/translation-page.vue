@@ -492,7 +492,7 @@ export default {
     }
   },
   created() {
-    document.title = '翻译';
+    document.title = '翻译 - OCRanslate';
     // 如果是讯飞翻译就更改默认语言选项
     if (this.$store.state.options.translationProvider === 'xunfei') {
       this.languageSelected1 = 'en';

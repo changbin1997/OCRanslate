@@ -8,8 +8,8 @@ const jimp = require('jimp');
 
 module.exports = class ScreenshotOcr {
   options = null;  // 选项
-  available = {baidu: false, tencent: false, xunfei: false, youdao: false};  // 功能可用性
-  providerList = {baidu: '百度', tencent: '腾讯', xunfei: '讯飞', youdao: '有道'};  // OCR 提供商名称
+  available = {baidu: false, tencent: false, xunfei: false, youdao: false, tesseract: true};  // 功能可用性
+  providerList = {baidu: '百度', tencent: '腾讯', xunfei: '讯飞', youdao: '有道', tesseract: 'Tesseract'};  // OCR 提供商名称
 
   constructor(options) {
     this.options = options;
@@ -64,7 +64,14 @@ module.exports = class ScreenshotOcr {
     }
     // 调用 OCR 识别
     const ocr = new Ocr(this.options);
-    const result = await ocr[provider](ocrType, img);
+    let result = null;
+    if (provider === 'tesseract') {
+      // tesseractOCR
+      result = await ocr.tesseract(`data:image/png;base64,${img}`);
+    }else {
+      // 其它 OCR
+      result = await ocr[provider](ocrType, img);
+    }
     // 识别出错
     if (result.result !== 'success') return result;
     result.img = img;
@@ -85,7 +92,13 @@ module.exports = class ScreenshotOcr {
     if (img.result !== undefined && img.result === 'error') return img;
     // 调用 OCR 识别
     const ocr = new Ocr(this.options);
-    const result = await ocr[provider](ocrType, img);
+    let result = null;
+    // tesseractOCR
+    if (provider === 'tesseract') {
+      result = await ocr.tesseract(`data:image/png;base64,${img}`);
+    }else {
+      result = await ocr[provider](ocrType, img);
+    }
     // 识别出错
     if (result.result !== 'success') return result;
     result.img = img;

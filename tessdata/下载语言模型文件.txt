@@ -1,0 +1,10 @@
+因为语言模型文件体积较大，打包后的软件只包含中文和英文的语言模型文件，其它语言的模型文件需要手动下载。
+
+极速版 https://github.com/tesseract-ocr/tessdata_fast
+高精度版 https://github.com/tesseract-ocr/tessdata_best
+
+极速版的识别速度较快，但准确率可能稍低于高精度版，高精度版的准确率会高一些，速度也会更慢。
+
+直接下载 .traineddata 的文件，下载完成后放到软件目录下的 tessdata 目录里。
+
+语言模型文件名称可以参考 https://tesseract-ocr.github.io/tessdoc/Data-Files#data-files-for-version-400-november-29-2016 的表格。

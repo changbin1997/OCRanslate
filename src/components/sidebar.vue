@@ -17,7 +17,7 @@
         <i class="icon-history"></i>
         <span>历史</span>
       </router-link>
-      <router-link :to="{name: 'optionsPage'}" class="mb-2" role="listitem" v-bind:class="{'link-active': $route.name === 'optionsPage'}">
+      <router-link :to="{name: 'optionsPage'}" class="mb-2" role="listitem" v-bind:class="{'link-active': $route.name === 'optionsPage' || $route.name === 'tessdataPage'}">
         <i class="icon-cog"></i>
         <span>设置</span>
       </router-link>

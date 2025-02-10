@@ -65,7 +65,8 @@ export default {
         {provider: 'tencent', name: '腾讯云通用印刷体识别（精简版）'},
         {provider: 'tencent', name: '腾讯云通用印刷体识别（高速版）'},
         {provider: 'xunfei', name: '科大讯飞通用文字识别'},
-        {provider: 'youdao', name: '有道智云通用文字识别'}
+        {provider: 'youdao', name: '有道智云通用文字识别'},
+        {provider: 'tesseract', name: 'TesseractOCR（离线识别）'}
       ],
       ocrTypeSelectde: '百度云通用文字识别（标准版）',
       showGuide: true,
@@ -73,7 +74,7 @@ export default {
       ocrText: '',
       voice: null,
       disabledVoiceBtn: false,
-      available: {baidu: false, tencent: false, detect: false, xunfei: false, youdao: false}
+      available: {baidu: false, tencent: false, detect: false, xunfei: false, youdao: false, tesseract: true}
     }
   },
   methods: {
@@ -153,8 +154,12 @@ export default {
       this.showGuide = false;
       this.imgOptions.url = fileName;
       this.imgOptions.show = true;
-      // 把图片转为 base64
-      const base64 = await window.electronAPI.ipcRenderer.invoke('fileToBase64', fileName);
+      let base64 = fileName;
+      // 如果不是 tesseractOCR
+      if (this.ocrTypeSelectde !== 'TesseractOCR（离线识别）') {
+        // 把图片转为 base64
+        base64 = await window.electronAPI.ipcRenderer.invoke('fileToBase64', fileName);
+      }
       // 获取图片后缀
       let imgType = fileName.match(/\.([^.]+)$/);
       imgType = imgType ? imgType[1] : 'png';
@@ -352,7 +357,7 @@ export default {
     }
   },
   created() {
-    document.title = 'OCR文字识别';
+    document.title = 'OCR文字识别 - OCRanslate';
     // 如果 Vuex 已经获取选项数据就初始化语音
     if (this.$store.state.options !== null) {
       // 初始化语音

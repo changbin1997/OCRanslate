@@ -2,7 +2,7 @@
   <div id="about-page">
     <div class="p-3">
       <h2>关于本软件</h2>
-      <p>这只是我为了个人需求写的一个我自用的软件，软件没有内置 API 密钥信息，需要自己申请 API 填写使用，下面是目前支持的 API 功能：</p>
+      <p>这只是我为了个人需求写的一个我自用的软件，目前支持 TesseractOCR（离线识别）和调用在线的 OCR 和翻译 API，下面是支持的在线 API：</p>
       <ul>
         <li>百度通用文字识别 - 通用文字识别（标准版）</li>
         <li>百度通用文字识别 - 通用文字识别（高精度版）</li>
@@ -34,7 +34,7 @@
       <p>腾讯机器翻译：<a href="https://cloud.tencent.com/product/tmt" @click="openLink">https://cloud.tencent.com/product/tmt</a></p>
       <p>讯飞翻译：<a href="https://www.xfyun.cn/services/xftrans" @click="openLink">https://www.xfyun.cn/services/xftrans</a></p>
       <p>有道翻译：<a href="https://ai.youdao.com/product-fanyi-text.s" @click="openLink">https://ai.youdao.com/product-fanyi-text.s</a></p>
-      <p>下面是 API 的免费额度说明：</p>
+      <p>下面是在线 API 的免费额度说明：</p>
       <ul>
         <li>百度通用文字识别：每月 1000 次免费</li>
         <li>腾讯通用文字识别：每月 1000 次免费</li>
@@ -45,6 +45,9 @@
       </ul>
       <p>以上信息写于 2022 年 8 月 28 日，API 额度可能随时会更改，一切以官网为准。</p>
       <p>注意，腾讯翻译不是所有的语言都能实现互译！<a href="https://cloud.tencent.com/document/product/551/15619" @click="openLink">点击查看哪些语言可以翻译为哪些语言</a></p>
+      <h2>TesseractOCR</h2>
+      <p>Tesseract 是 Google 开源的一个 OCR 识别模型，中文的识别准确率可能不如国内互联网公司提供的在线 OCR 服务，但是支持很多种语言。</p>
+      <p>TesseractOCR 是离线识别，没有次数限制，也不会加入历史记录。</p>
     </div>
   </div>
 </template>
@@ -61,7 +64,7 @@ export default {
     }
   },
   created() {
-    document.title = '关于';
+    document.title = '关于 - OCRanslate';
   }
 }
 </script>

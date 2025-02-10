@@ -3,6 +3,7 @@ const Ocr = require('./Ocr');  // OCR 模块
 const Data = require('./Data');  // 数据库操作模块
 const ContextMenu = require('./contextMenu');  // 上下文菜单模块
 const Translation = require('./Translation');  // 翻译模块
+const TesseractOcr = require('./TesseractOcr');
 const selectorWindow = require('./selector-window');
 const ScreenshotOcr = require('./screenshotOcr');
 const path = require("path");
@@ -241,9 +242,12 @@ module.exports = class MyApp {
     // OCR识别
     ipcMain.handle('ocr', async (ev, args) => {
       const ocr = new Ocr(args.options);
-      // 是否是讯飞 OCR
       if (args.provider === 'xunfei') {
+        // 讯飞OCR
         return await ocr.xunfei(args.type, args.base64File, args.imgType);
+      }else if (args.provider === 'tesseract') {
+        // tesseractOCR
+        return await ocr.tesseract(args.base64File);
       }else {
         return await ocr[args.provider](args.type, args.base64File);
       }
@@ -346,6 +350,12 @@ module.exports = class MyApp {
     // 删除收藏
     ipcMain.handle('deleteFavorite', async (ev, args) => {
       return await this.data.deleteFavorite(args);
+    });
+
+    // 获取 TesseractOcr 的模型文件列表
+    ipcMain.handle('getTesseractOcrFileList', (ev, args) => {
+      const tesseractOcr = new TesseractOcr();
+      return tesseractOcr.fileList();
     });
   }
 };
