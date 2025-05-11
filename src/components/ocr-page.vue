@@ -292,21 +292,25 @@ export default {
       this.available.detect = true;
       // 如果没有填写任何 API 信息就弹出提示
       if (!this.available.baidu && !this.available.tencent && !this.available.xunfei && !this.available.youdao) {
+        // 是否已经显示过 API 提示
+        const ocrApiMessage = localStorage.getItem('ocr_api_message');
+        if (ocrApiMessage === '已提示') return true;
         window.electronAPI.ipcRenderer.invoke('dialog', {
           name: 'showMessageBox',
           options: {
             title: '没有填写 API 密钥',
-            message: '您还没有填写任何 OCR API 的密钥信息，目前 OCR 功能暂不可用，请在设置中填写需要使用的 OCR 服务密钥信息！',
+            message: '您还没有填写任何 OCR API 的密钥信息，目前只能使用 TesseractOCR（离线识别），如果要使用在线识别，请在设置中填写需要使用的 OCR 服务密钥信息！',
             buttons: ['知道了'],
             type: 'info',
             noLink: true
           }
         });
+        localStorage.setItem('ocr_api_message', '已提示');
       }
     },
     // 检查当前使用的 API 是否填写密钥信息
     apiAvailable() {
-      const providerName = {baidu: '百度', tencent: '腾讯', xunfei: '讯飞', youdao: '有道'};
+      const providerName = {baidu: '百度', tencent: '腾讯', xunfei: '讯飞', youdao: '有道', tesseract: 'Tesseract'};
       let status = true;
       // 获取 OCR 提供商
       for (let i = 0;i < this.ocrType.length;i ++) {
