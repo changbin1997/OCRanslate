@@ -2,8 +2,25 @@ const Tesseract = require('tesseract.js');
 const fs = require('fs');
 const path = require('path');
 const ocrLanguageList = require('./ocr-language-list');
+const shell = require('electron').shell;
 
 module.exports = class TesseractOcr {
+  // 打开模型文件目录
+  openDir() {
+    const dir = path.join(process.cwd(), 'tessdata');
+    // 目录是否存在
+    if (!fs.existsSync(dir)) {
+      // 如果目录不存在就创建一个
+      try {
+        fs.mkdirSync(dir, { recursive: true });
+      }catch (error) {
+        return {result: 'error', msg: error.message};
+      }
+    }
+    shell.openPath(dir);
+    return {result: 'success'};
+  }
+
   // 获取模型文件列表
   fileList() {
     // 获取文件列表

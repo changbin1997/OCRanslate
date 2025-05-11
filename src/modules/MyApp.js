@@ -353,9 +353,15 @@ module.exports = class MyApp {
     });
 
     // 获取 TesseractOcr 的模型文件列表
-    ipcMain.handle('getTesseractOcrFileList', (ev, args) => {
+    ipcMain.handle('getTesseractOcrFileList', () => {
       const tesseractOcr = new TesseractOcr();
       return tesseractOcr.fileList();
+    });
+
+    // 打开模型文件目录
+    ipcMain.handle('openDir', () => {
+      const tesseractOcr = new TesseractOcr();
+      return tesseractOcr.openDir();
     });
   }
 };

@@ -28,6 +28,9 @@
           </tr>
         </tbody>
       </table>
+      <div class="mb-3">
+        <button type="button" class="btn btn-primary" @click="openDir">打开模型文件目录</button>
+      </div>
       <p>下载更多语言模型可以点击下面两个链接</p>
       <ul>
         <li>
@@ -53,6 +56,22 @@ export default {
     }
   },
   methods: {
+    // 打开模型文件目录
+    async openDir() {
+      const result = await window.electronAPI.ipcRenderer.invoke('openDir', '');
+      if (result.result !== 'success') {
+        window.electronAPI.ipcRenderer.invoke('dialog', {
+          name: 'showMessageBox',
+          options: {
+            title: '打开模型文件目录出错',
+            message: result.msg,
+            buttons: ['关闭'],
+            type: 'error',
+            noLink: true
+          }
+        });
+      }
+    },
     // 通过浏览器打开链接
     openLink(ev) {
       ev.preventDefault();
