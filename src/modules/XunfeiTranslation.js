@@ -9,6 +9,12 @@ module.exports = class XunfeiTranslation {
   APISecret = '';
   APIKey = '';
 
+  /**
+   * 初始化讯飞翻译
+   * @param {string} APPId 应用 ID
+   * @param {string} APISecret API 密钥
+   * @param {string} APIKey API 钥匙
+   */
   constructor(APPId, APISecret, APIKey) {
     this.APPId = APPId;
     this.APISecret = APISecret;
@@ -17,7 +23,13 @@ module.exports = class XunfeiTranslation {
     this.date = new Date().toUTCString();
   }
 
-  // 提交翻译
+  /**
+   * 提交翻译请求到讯飞翻译 API
+   * @param {string} text 要翻译的文本
+   * @param {string} [from='en'] 源语言，默认为英文
+   * @param {string} [to='cn'] 目标语言，默认为中文
+   * @returns {Object|Promise<Object>} 返回 {result, msg/data} 对象或其 Promise
+   */
   submit(text, from = 'en', to = 'cn') {
     text = Buffer.from(text).toString('base64');
     // 翻译内容是否超出限制
@@ -80,7 +92,11 @@ module.exports = class XunfeiTranslation {
     });
   }
 
-  // 生成 authorization
+  /**
+   * 生成 Authorization 认证头和 Digest 摘要
+   * @param {Object} submitData 要提交的数据对象
+   * @returns {Object} 返回 {authorization, digest} 对象
+   */
   getAuthorization(submitData) {
     // 生成 Digest
     submitData = JSON.stringify(submitData);

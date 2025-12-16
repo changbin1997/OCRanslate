@@ -80,7 +80,10 @@ export default {
     }
   },
   methods: {
-    // 删除收藏
+    /**
+     * 删除已收藏的翻译记录
+     * @returns {Promise<void|false>} 若无收藏 ID 或删除出错则返回 false，否则返回 void
+     */
     async deleteFavorite() {
       if (this.favoriteId === null) return false;
       const deleteResult = await window.electronAPI.ipcRenderer.invoke('deleteFavorite', this.favoriteId);
@@ -113,7 +116,10 @@ export default {
       this.favoriteId = null;
       this.favorite = false;
     },
-    // 添加收藏
+    /**
+     * 添加翻译结果到收藏或从收藏中移除
+     * @returns {Promise<void|false>} 若无翻译结果则返回 false，否则返回 void
+     */
     async addToFavorites() {
       if (this.translationResult === null) return false;
       // 如果已经收藏就移除收藏
@@ -152,7 +158,11 @@ export default {
         }
       }
     },
-    // 显示导出菜单
+    /**
+     * 显示翻译结果导出菜单
+     * @param {MouseEvent} ev 事件对象（未实际使用）
+     * @returns {void|false} 若无翻译结果则返回 false，否则无返回值
+     */
     exportMenu(ev) {
       if (this.translationResult === null) return false;
       // 获取翻译结果
@@ -176,7 +186,11 @@ export default {
         result: exportResult
       });
     },
-    // 拖拽翻译
+    /**
+     * 处理拖拽文件事件，将文件内容读取并作为原文
+     * @param {DragEvent} ev 拖拽事件对象
+     * @returns {void|false} 若文件过大或读取出错则返回 false，否则无返回值
+     */
     dragFile(ev) {
       ev.preventDefault();
       ev.stopPropagation();
@@ -220,12 +234,19 @@ export default {
         this.originalText = fileEv.target.result;
       });
     },
-    // 阻止拖拽的默认事件
+    /**
+     * 阻止拖拽相关事件的默认行为和冒泡
+     * @param {Event} ev 事件对象
+     * @returns {void}
+     */
     preventDefault(ev) {
       ev.preventDefault();
       ev.stopPropagation();
     },
-    // 提交翻译
+    /**
+     * 提交翻译请求并处理翻译结果
+     * @returns {Promise<void|false>} 若出错或无翻译内容则返回 false，否则返回 void
+     */
     async submit() {
       // 重置翻译结果和翻译收藏
       this.translationResult = null;
@@ -313,7 +334,10 @@ export default {
       // 清除自动执行
       this.$store.commit('changeAuto', '');
     },
-    // 清空
+    /**
+     * 清空翻译内容、结果、收藏状态和自动执行状态
+     * @returns {void}
+     */
     clear() {
       this.resultText = '';
       this.originalText = '';
@@ -323,7 +347,12 @@ export default {
       this.favoriteId = null;
       this.$store.commit('changeAuto', '');
     },
-    // 开始语音朗读
+    /**
+     * 启动文本语音朗读，支持自动选择或指定语音库
+     * @param {string} text 要朗读的文本内容
+     * @param {string} type 朗读类型，'original' 为原文，'result' 为译文
+     * @returns {void|false} 若无音频库或文本为空则返回 false，否则无返回值
+     */
     startVoice(text, type) {
       if (text === '') return false;
       let language = '';
@@ -407,13 +436,19 @@ export default {
         }
       });
     },
-    // 拷贝译文
+    /**
+     * 将译文复制到系统剪贴板
+     * @returns {void|false} 若无译文则返回 false，否则无返回值
+     */
     copyText() {
       if (this.resultText === '') return false;
       // 发送拷贝请求
       window.electronAPI.ipcRenderer.invoke('copy-text', this.resultText);
     },
-    // 检查 API 密钥是否填写
+    /**
+     * 检查各翻译 API 提供商的密钥是否已填写
+     * @returns {void}
+     */
     apiInit() {
       // 检查百度 API 密钥
       if (
@@ -464,7 +499,10 @@ export default {
         });
       }
     },
-    // 自动翻译
+    /**
+     * 检查并执行自动翻译，通常由 OCR 识别完成后触发
+     * @returns {void}
+     */
     autoTranslation() {
       if (
           this.$route.query.ocrTranslation !== undefined &&
@@ -481,7 +519,11 @@ export default {
         }
       }
     },
-    // 上下文菜单
+    /**
+     * 显示文本框的上下文菜单（右键菜单）
+     * @param {MouseEvent} ev 鼠标事件对象
+     * @returns {void}
+     */
     contextMenu(ev) {
       ev.preventDefault();
       const client = {

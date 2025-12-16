@@ -4,7 +4,11 @@ const fs = require('fs');
 const path = require('path');
 
 module.exports = class ExportResult {
-  // 导出 HTML OCR结果
+  /**
+   * 导出 OCR 识别结果为 HTML 文件
+   * @param {Object} result OCR 识别结果对象，包含 img 和 text
+   * @returns {boolean} 返回导出是否成功
+   */
   ocrResultHTML(result) {
     // 生成默认的文件名
     const defaultFileName = `OCR${DateTime.timestampFormat2(
@@ -84,7 +88,11 @@ module.exports = class ExportResult {
     });
   }
 
-  // 导出 TXT OCR结果
+  /**
+   * 导出 OCR 识别结果为 TXT 文件
+   * @param {Object} result OCR 识别结果对象，包含 text
+   * @returns {boolean} 返回导出是否成功
+   */
   ocrResultTxt(result) {
     // 生成默认的文件名
     const defaultFileName = `OCR${DateTime.timestampFormat2(
@@ -115,7 +123,11 @@ module.exports = class ExportResult {
     });
   }
 
-  // 导出 HTML 翻译结果
+  /**
+   * 导出翻译结果为 HTML 文件
+   * @param {Object} result 翻译结果对象，包含 from、to、trans_result
+   * @returns {boolean} 返回导出是否成功
+   */
   translationResultHTML(result) {
     // 生成默认的文件名
     const defaultFileName = `翻译${DateTime.timestampFormat2(
@@ -178,7 +190,11 @@ module.exports = class ExportResult {
     });
   }
 
-  // 导出 txt 翻译结果
+  /**
+   * 导出翻译结果为 TXT 文件
+   * @param {Object} result 翻译结果对象，包含 from、to、trans_result
+   * @returns {boolean} 返回导出是否成功
+   */
   translationResultTxt(result) {
     // 生成默认的文件名
     const defaultFileName = `翻译${DateTime.timestampFormat2(

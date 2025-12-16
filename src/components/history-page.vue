@@ -45,7 +45,10 @@ export default {
     }
   },
   methods: {
-    // 切换标签页
+    /**
+     * 切换标签页
+     * @param {string} pageName 要切换到的标签页名称
+     */
     changePage(pageName) {
       this.page.overview = false;
       this.page.ocrTable = false;

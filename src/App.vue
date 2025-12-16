@@ -16,7 +16,10 @@ export default {
     sidebar
   },
   methods: {
-    // 获取选项
+    /**
+     * 获取选项
+     * @returns {Promise<void>}
+     */
     async getOptions() {
       const options = await window.electronAPI.ipcRenderer.invoke('getOptions');
       if (options.result !== 'success') {

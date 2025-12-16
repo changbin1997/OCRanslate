@@ -452,13 +452,22 @@ export default {
     }
   },
   methods: {
-    // 目录跳转
+    /**
+     * 平滑滚动到指定的页面区域标题
+     * @param {string} titleId 目标标题的 CSS 选择器 ID（如 '#section-id'）
+     * @returns {void}
+     */
     scrollToSection(titleId) {
       document.querySelector(titleId).scrollIntoView({
         behavior: 'smooth'
       });
     },
-    // 设置快捷键
+    /**
+     * 根据键盘按键事件获取快捷键组合并保存
+     * @param {KeyboardEvent} ev 键盘事件对象
+     * @param {string} keyIndex 要保存快捷键的数据属性名（如 'key1Name'）
+     * @returns {Promise<false>} 总是返回 false 以阻止默认事件
+     */
     async getKeyName(ev, keyIndex) {
       if (ev.key !== 'Tab') ev.preventDefault();
       let keysPressed = ev.key;
@@ -470,7 +479,10 @@ export default {
       this.optionsSelected[keyIndex] = keysPressed;
       return false;
     },
-    // 打开屏幕区域选择器
+    /**
+     * 打开屏幕区域选择器窗口并获取用户选择的区域信息
+     * @returns {Promise<void|false>} 选择成功时返回 void，出错时返回 false
+     */
     async openSelector() {
       const result = await window.electronAPI.ipcRenderer.invoke('selector-window');
       if (result.result !== 'success') {
@@ -492,7 +504,11 @@ export default {
       this.optionsSelected.specificAreaWidth = result.width;
       this.optionsSelected.specificAreaHeight = result.height;
     },
-    // 测试语音朗读效果
+    /**
+     * 测试 OCR 语音朗读效果
+     * @param {MouseEvent} ev 按钮点击事件对象，用于获取按钮元素
+     * @returns {void}
+     */
     voiceTest(ev) {
       const text = '你好，很高兴认识你。Hello, Nice to meet you.';  // 语音测试朗读的内容
       // 语音设置配置
@@ -519,7 +535,10 @@ export default {
         });
       }, 300);
     },
-    // 加载语音库列表
+    /**
+     * 加载系统可用的语音库列表，如未设置则选择中文语音库为默认
+     * @returns {void}
+     */
     loadVoiceLibraryList() {
       this.synth = window.speechSynthesis;
       // 延迟获取语音库
@@ -533,7 +552,10 @@ export default {
         if (voiceLibrary !== undefined && voiceLibrary !== null) this.optionsSelected.ocrVoiceLibrarySelected = voiceLibrary;
       }, 30);
     },
-    // 保存设置
+    /**
+     * 保存设置选项到数据库，检查快捷键冲突，并在保存成功后询问是否重启程序
+     * @returns {Promise<void|false>} 快捷键冲突或保存失败时返回 false，否则返回 void
+     */
     async saveOptions() {
       // 检查快捷键是否有重复
       const keyName = [this.optionsSelected.key1Name, this.optionsSelected.key2Name, this.optionsSelected.specificAreaKeyName];

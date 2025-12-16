@@ -10,20 +10,36 @@ module.exports = class BaiduTranslation {
     this.options = optionsObj;
   }
 
-  // 生成签名
+  /**
+   * 生成签名
+   * @param {string} query 查询字符串
+   * @param {number} salt 随机数
+   * @returns {string} 签名哈希值
+   */
   signature(query, salt) {
     const signature = this.options.baiduTranslationAppID + query + salt + this.options.baiduTranslationApiKey;
     const md5 = crypto.createHash('md5');
     return md5.update(signature).digest('hex');
   }
 
-  // 生成随机数
+  /**
+   * 生成随机数
+   * @param {number} max 最大值
+   * @param {number} min 最小值
+   * @returns {number} 随机数
+   */
   rand(max, min) {
     const num = max - min;
     return Math.round(Math.random() * num + min);
   }
 
-  // 发送翻译
+  /**
+   * 发送翻译请求到百度翻译 API
+   * @param {string} q 要翻译的文本
+   * @param {string} from 源语言
+   * @param {string} to 目标语言
+   * @returns {Promise<Object>} 返回 {result, msg/data} 对象的 Promise
+   */
   send(q, from, to) {
     // 生成一个随机数
     const randerNum = this.rand(999999, 111111);

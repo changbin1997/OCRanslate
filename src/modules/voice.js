@@ -6,7 +6,13 @@ export default class Voice {
   voiceLibraryName = '';  // 语音库名称
   utterThis = null;
 
-  // 初始化
+  /**
+   * 初始化语音合成
+   * @param {Object} [config={}] 配置对象
+   * @param {number} [config.volume] 音量（0-1）
+   * @param {number} [config.speed] 语速（0-2）
+   * @param {string} [config.voiceLibrary] 语音库名称
+   */
   constructor(config = {}) {
     // 设置音量
     if (config.volume !== undefined) this.volume = config.volume;
@@ -31,7 +37,11 @@ export default class Voice {
     this.utterThis = new SpeechSynthesisUtterance();
   }
 
-  // 寻找指定语言的语音库
+  /**
+   * 寻找指定语言的语音库
+   * @param {string} language 语言代码或名称
+   * @returns {boolean} 返回是否找到指定语言的语音库
+   */
   changeLanguage(language) {
     let exist = false;  // 如果找到指定语言的语音库就为 true
     const re = new RegExp(language, 'i');  // 匹配语音库的正则表达式
@@ -44,7 +54,11 @@ export default class Voice {
     return exist;
   }
 
-  // 更改语音库
+  /**
+   * 更改语音库
+   * @param {string} name 语音库名称
+   * @returns {boolean} 返回是否更改成功
+   */
   changeVoiceLibrary(name) {
     // 获取语音库列表
     const voiceLibraryList = this.synth.getVoices();
@@ -55,7 +69,15 @@ export default class Voice {
     return true;
   }
 
-  // 开始朗读
+  /**
+   * 开始朗读文本
+   * @param {Object} options 配置选项
+   * @param {string} options.text 要朗读的文本内容
+   * @param {Function} [options.start] 朗读开始的回调函数
+   * @param {Function} [options.stop] 朗读停止的回调函数
+   * @param {Function} [options.error] 出错时的回调函数
+   * @returns {boolean} 返回是否开始朗读成功
+   */
   start(options) {
     // 设置合成的文本内容
     this.utterThis.text = options.text;
@@ -90,7 +112,10 @@ export default class Voice {
     }
   }
 
-  // 停止朗读
+  /**
+   * 停止朗读
+   * @returns {void}
+   */
   stop() {
     this.synth.cancel();
   }

@@ -14,7 +14,11 @@ module.exports = class MyApp {
   data = null;
   options = null;
 
-  // 数据库初始化
+  /**
+   * 初始化数据库和获取配置选项
+   * @param {Object} mainWindow Electron 主窗口对象
+   * @returns {Promise<void>}
+   */
   async dataInit(mainWindow) {
     this.data = new Data();
     // 如果无法打开数据库
@@ -61,7 +65,11 @@ module.exports = class MyApp {
     }
   }
 
-  // 托盘图标菜单
+  /**
+   * 创建系统托盘菜单
+   * @param {Object} mainWindow Electron 主窗口对象
+   * @returns {Promise<void>}
+   */
   async trayMenu(mainWindow) {
     tray = new Tray(path.normalize(path.join(__dirname, '../icon.ico')));
     // 菜单模板
@@ -96,7 +104,11 @@ module.exports = class MyApp {
     });
   }
 
-  // 全局快捷键
+  /**
+   * 注册全局快捷键和监听快捷键事件
+   * @param {Object} mainWindow Electron 主窗口对象
+   * @returns {Promise<void>}
+   */
   async globalShortcut(mainWindow) {
     const screenshotOcr = new ScreenshotOcr(this.options.options);
     // 如果开启了全局快捷键1
@@ -211,7 +223,10 @@ module.exports = class MyApp {
   }
 
 
-  // 处理渲染进程的 ipc 请求
+  /**
+   * 处理渲染进程的 IPC 请求和事件
+   * @returns {void}
+   */
   ipc() {
     // 打开屏幕区域选择窗口
     ipcMain.handle('selector-window',  async () => {

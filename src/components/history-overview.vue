@@ -154,7 +154,10 @@ export default {
     }
   },
   methods: {
-    // 获取 OCR 总览数据
+    /**
+     * 获取各 OCR 提供商的历史记录统计数据
+     * @returns {void}
+     */
     getOcrData() {
       window.electronAPI.ipcRenderer.invoke('ocrHistoryOverview').then(result => {
         this.baidu = result.baidu;
@@ -163,7 +166,11 @@ export default {
         this.youdao = result.youdao;
       });
     },
-    // 清空 OCR 历史记录
+    /**
+     * 删除指定 OCR 提供商的所有历史记录，删除前有确认步骤
+     * @param {string} provider OCR 提供商名称（'baidu', 'tencent', 'xunfei', 'youdao'）
+     * @returns {Promise<void|false>} 无数据或用户取消则返回 false，删除成功时返回 void
+     */
     async deleteOcrHistory(provider) {
       // 检查是否有数据
       let count = 0;
@@ -215,7 +222,10 @@ export default {
       // 重新加载 OCR 记录
       this.getOcrData();
     },
-    // 获取翻译总览数据
+    /**
+     * 获取各翻译提供商的历史记录统计数据
+     * @returns {void}
+     */
     getTranslationData() {
       window.electronAPI.ipcRenderer.invoke('translationHistoryOverview').then(result => {
         this.baiduTranslation = result.baidu;
@@ -224,7 +234,11 @@ export default {
         this.youdaoTranslation = result.youdao;
       });
     },
-    // 清空翻译历史记录
+    /**
+     * 删除指定翻译提供商的所有历史记录，删除前有确认步骤
+     * @param {string} provider 翻译提供商名称（'baidu', 'tencent', 'xunfei', 'youdao'）
+     * @returns {Promise<void|false>} 無數据或用户取消则返回 false，删除成功时返回 void
+     */
     async deleteAllTranslationHistory(provider) {
       // 如果没有数据
       if (this[`${provider}Translation`][0].count < 1) return false;

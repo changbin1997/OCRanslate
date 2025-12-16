@@ -6,12 +6,22 @@ module.exports = class YoudaoOcr {
   appId = null;
   appKey = null;
 
+  /**
+   * 初始化有道 OCR
+   * @param {string} appId 应用 ID
+   * @param {string} appKey 应用密钥
+   */
   constructor(appId, appKey) {
     this.appId = appId;
     this.appKey = appKey;
   }
 
-  // 提交识别
+  /**
+   * 提交 OCR 识别请求到有道 API
+   * @param {string} base64Img Base64 编码的图片数据
+   * @param {string} [langType='auto'] 语言类型，默认为自动识别
+   * @returns {Promise<Object>} 返回 {result, list/msg} 对象的 Promise，成功时包含识别出的文字列表
+   */
   submit(base64Img, langType = 'auto') {
     // 获取要提交的数据
     const queryData = this.submitData(base64Img, langType);
@@ -52,7 +62,12 @@ module.exports = class YoudaoOcr {
     });
   }
 
-  // 生成签名
+  /**
+   * 生成提交数据及签名
+   * @param {string} base64Img Base64 编码的图片数据
+   * @param {string} langType 语言类型
+   * @returns {string} 返回 URL 编码的查询字符串数据
+   */
   submitData(base64Img, langType) {
     const data = {
       // 生成 UUID

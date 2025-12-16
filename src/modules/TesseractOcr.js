@@ -5,7 +5,10 @@ const ocrLanguageList = require('./ocr-language-list');
 const shell = require('electron').shell;
 
 module.exports = class TesseractOcr {
-  // 打开模型文件目录
+  /**
+   * 打开模型文件目录
+   * @returns {Object} 返回 {result, msg} 对象，result 为 'success' 或 'error'
+   */
   openDir() {
     const dir = path.join(process.cwd(), 'tessdata');
     // 目录是否存在
@@ -21,7 +24,10 @@ module.exports = class TesseractOcr {
     return {result: 'success'};
   }
 
-  // 获取模型文件列表
+  /**
+   * 获取模型文件列表
+   * @returns {Object} 返回 {list, count} 对象，list 为文件列表数组，count 为已下载文件数量
+   */
   fileList() {
     // 获取文件列表
     const list = fs.readdirSync(path.join(process.cwd(), 'tessdata'));
@@ -41,13 +47,22 @@ module.exports = class TesseractOcr {
     return {list: languageList, count: count};
   }
 
-  // 检查模型文件是否存在
+  /**
+   * 检查模型文件是否存在
+   * @param {string} fileName 模型文件名称
+   * @returns {boolean} 返回文件是否存在
+   */
   fileExists(fileName) {
     fileName = path.join(process.cwd(), 'tessdata', fileName);
     return fs.existsSync(fileName);
   }
 
-  // 识别
+  /**
+   * 使用 Tesseract 识别图片中的文字
+   * @param {string} img 图片路径或数据
+   * @param {string} [language='chi_sim'] 识别语言，默认为简体中文
+   * @returns {Promise<Object>} 返回 {result, list/msg} 对象的 Promise，成功时包含识别出的文字列表
+   */
   async recognize(img, language = 'chi_sim') {
     // 是否是支持的语言
     const languageItem = ocrLanguageList.tesseract.find(item => item.code === language);

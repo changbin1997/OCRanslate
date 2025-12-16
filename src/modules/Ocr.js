@@ -12,12 +12,21 @@ module.exports = class Ocr {
   options = null;
   data = null;
 
+  /**
+   * 初始化 OCR 识别模块
+   * @param {Object} optionsObj 配置对象
+   */
   constructor(optionsObj) {
     this.options = optionsObj;
     this.data = new Data();
   }
 
-  // 百度 OCR 识别
+  /**
+   * 使用百度 OCR 进行文字识别
+   * @param {string} type 识别类型（如标准版、高精度版）
+   * @param {string} base64File Base64 编码的图片数据
+   * @returns {Promise<Object>} 返回 {result, list/msg} 对象的 Promise
+   */
   baidu(type, base64File) {
     // 配置百度 SDK 的网络
     HttpClient.setRequestOptions({timeout: 15000});
@@ -71,7 +80,12 @@ module.exports = class Ocr {
     });
   }
 
-  // 腾讯 OCR 识别
+  /**
+   * 使用腾讯 OCR 进行文字识别
+   * @param {string} type 识别类型（如标准版、高精度版、手写体等）
+   * @param {string} base64File Base64 编码的图片数据
+   * @returns {Promise<Object>} 返回 {result, list/msg} 对象的 Promise
+   */
   tencent(type, base64File) {
     const client = new OcrClient({
       credential: {
@@ -132,7 +146,13 @@ module.exports = class Ocr {
     });
   }
 
-  // 讯飞 OCR 识别
+  /**
+   * 使用讯飞 OCR 进行文字识别
+   * @param {string} type 识别类型
+   * @param {string} base64File Base64 编码的图片数据
+   * @param {string} [imgType='png'] 图片类型，默认为 png
+   * @returns {Promise<Object>} 返回识别结果 Promise
+   */
   async xunfei(type, base64File, imgType = 'png') {
     const xunfeiOcr = new XunfeiOcr(this.options.xunfeiOcrAPPId, this.options.xunfeiOcrAPISecret, this.options.xunfeiOcrAPIKey);
     const result = await xunfeiOcr.submit(base64File, imgType);
@@ -143,7 +163,12 @@ module.exports = class Ocr {
     return result;
   }
 
-  // 有道智云OCR
+  /**
+   * 使用有道智云 OCR 进行文字识别
+   * @param {string} type 识别类型
+   * @param {string} base64File Base64 编码的图片数据
+   * @returns {Promise<Object>} 返回识别结果 Promise
+   */
   async youdao(type, base64File) {
     const youdaoOcr = new YoudaoOcr(this.options.youdaoOcrAppID, this.options.youdaoOcrAppKey);
     const result = await youdaoOcr.submit(base64File, this.options.youdaoOcrLanguageSelected);
@@ -154,19 +179,31 @@ module.exports = class Ocr {
     return result;
   }
 
-  // 读取文件并转换为 base64
+  /**
+   * 读取文件并转换为 Base64 编码
+   * @param {string} fileName 文件路径
+   * @returns {string} 返回 Base64 编码的字符串
+   */
   static fileToBase64(fileName) {
     return fs.readFileSync(fileName).toString('base64');
   }
 
-  // 检查是否是图片
+  /**
+   * 检查文件是否为图片格式
+   * @param {string} fileName 文件路径
+   * @returns {boolean} 返回是否为图片文件
+   */
   static isImage(fileName) {
     const extnameList = ['.jpg', '.png', '.jpeg'];
     const extname = path.extname(fileName);
     return extnameList.indexOf(extname) >= 0;
   }
 
-  // Tesseract OCR
+  /**
+   * 使用 Tesseract 进行文字识别
+   * @param {string} img 图片路径或数据
+   * @returns {Promise<Object>} 返回识别结果 Promise
+   */
   async tesseract(img) {
     const tesseractOcr = new TesseractOcr();
     const result = await tesseractOcr.recognize(img, this.options.tesseractOcrLanguageSelected);

@@ -6,6 +6,9 @@ module.exports = class Data {
   db = null;
   dbErr = null;
 
+  /**
+   * 初始化数据库
+   */
   constructor() {
     const dbName = path.join(process.cwd(), 'data.db'); // 数据库名
     // 打开数据库
@@ -16,7 +19,11 @@ module.exports = class Data {
     });
   }
 
-  // 删除翻译收藏
+  /**
+   * 删除翻译收藏
+   * @param {number} id 收藏记录 ID
+   * @returns {Promise<Object>} 返回 {result, count/msg} 对象的 Promise
+   */
   deleteFavorite(id) {
     const sql = 'DELETE FROM favorites WHERE id = ?';
     return new Promise(resolve => {
@@ -30,7 +37,10 @@ module.exports = class Data {
     });
   }
 
-  // 获取翻译收藏数量
+  /**
+   * 获取翻译收藏数量
+   * @returns {Promise<number>} 返回收藏数量的 Promise
+   */
   favoritesCount() {
     const sql = 'SELECT COUNT(*) AS count FROM favorites';
     return new Promise(resolve => {
@@ -44,7 +54,11 @@ module.exports = class Data {
     });
   }
 
-  // 获取翻译收藏
+  /**
+   * 获取翻译收藏列表
+   * @param {number} page 页码（用于分页查询，每页 10 条）
+   * @returns {Promise<Object>} 返回 {result, count, list} 对象的 Promise
+   */
   async getFavorites(page) {
     // 获取收藏数量
     const count = await this.favoritesCount();
@@ -72,7 +86,11 @@ module.exports = class Data {
     });
   }
 
-  // 添加翻译收藏
+  /**
+   * 添加翻译收藏
+   * @param {Object} result 翻译结果对象，包含 from、to、trans_result、provider
+   * @returns {Promise<Object>} 返回 {result, count, id/msg} 对象的 Promise
+   */
   addToFavorites(result) {
     // 获取当前的时间戳
     const timestamp = Datetime.timestamp();
@@ -105,7 +123,11 @@ module.exports = class Data {
     });
   }
 
-  // 保存选项
+  /**
+   * 保存选项配置
+   * @param {Object} options 选项对象，key 为选项名，value 为选项值
+   * @returns {Promise<Object>} 返回 {result, count/msg} 对象的 Promise
+   */
   async updateOptions(options) {
     // 获取选项名
     const optionsName = Object.keys(options);
@@ -134,7 +156,12 @@ module.exports = class Data {
     return { result: 'success', count: count };
   }
 
-  // 保存选项数据
+  /**
+   * 更新单个选项数据
+   * @param {string} name 选项名
+   * @param {string} value 选项值
+   * @returns {Promise<Object>} 返回 {result, count/msg} 对象的 Promise
+   */
   updateOptionsData(name, value) {
     const sql = 'UPDATE ocr_options SET value = ? WHERE name = ?';
     return new Promise(resolve => {
@@ -148,7 +175,10 @@ module.exports = class Data {
     });
   }
 
-  // 获取选项
+  /**
+   * 获取所有选项配置
+   * @returns {Promise<Object>} 返回 {result, options/msg} 对象的 Promise
+   */
   getOptions() {
     return new Promise(resolve => {
       this.db.all('SELECT name, value FROM ocr_options', (err, rows) => {
@@ -185,7 +215,10 @@ module.exports = class Data {
     });
   }
 
-  // 初始化
+  /**
+   * 初始化数据库表结构
+   * @returns {Promise<Object>} 返回初始化结果 {result, msg}
+   */
   async init() {
     // 检查选项数据表是否存在
     const optionsTable = await this.optionsTableExists();
@@ -238,7 +271,10 @@ module.exports = class Data {
     return { result: 'success' };
   }
 
-  // 写入默认选项
+  /**
+   * 写入默认选项数据
+   * @returns {Promise<Object>} 返回 {result, count/msg} 对象的 Promise
+   */
   insertOptions() {
     // 默认选项
     const options = {
@@ -336,7 +372,10 @@ module.exports = class Data {
     });
   }
 
-  // 创建选项数据表
+  /**
+   * 创建选项数据表
+   * @returns {Promise<Object>} 返回表创建结果 {result, count/msg}
+   */
   createOptionsTable() {
     const sql = `
     CREATE TABLE ocr_options (
@@ -357,7 +396,12 @@ module.exports = class Data {
     });
   }
 
-  // 添加 OCR 历史记录
+  /**
+   * 添加 OCR 历史记录
+   * @param {string} provider OCR 服务提供商名称
+   * @param {string} ocrType OCR 识别类型
+   * @returns {Promise<Object>} 返回 {result, count/msg} 对象的 Promise
+   */
   addOcrHistory(provider, ocrType) {
     // 获取时间戳
     const time = Math.round(new Date().getTime() / 1000);
@@ -379,7 +423,10 @@ module.exports = class Data {
     });
   }
 
-  // 创建收藏数据表
+  /**
+   * 创建收藏数据表
+   * @returns {Promise<Object>} 返回表创建结果 {result, count/msg}
+   */
   createFavoritesTable() {
     const sql = `
     CREATE TABLE favorites (
@@ -404,7 +451,10 @@ module.exports = class Data {
     });
   }
 
-  // 收藏数据表是否存在
+  /**
+   * 检查收藏数据表是否存在
+   * @returns {Promise<Object>} 返回 {result, count/msg} 对象的 Promise
+   */
   favoritesTableExists() {
     const sql = `
     SELECT COUNT(*) FROM sqlite_master
@@ -421,7 +471,10 @@ module.exports = class Data {
     });
   }
 
-  // 创建 OCR 历史记录数据表
+  /**
+   * 创建 OCR 历史记录数据表
+   * @returns {Promise<Object>} 返回表创建结果 {result, count/msg}
+   */
   createOcrHistoryTable() {
     const sql = `
     CREATE TABLE ocr_history (
@@ -443,7 +496,10 @@ module.exports = class Data {
     });
   }
 
-  // 获取 OCR 历史记录的数量
+  /**
+   * 获取 OCR 历史记录的数量
+   * @returns {Promise<number>} 返回记录数量的 Promise
+   */
   ocrHistoryCount() {
     const sql = 'SELECT COUNT(*) AS count FROM ocr_history';
     return new Promise(resolve => {
@@ -457,7 +513,12 @@ module.exports = class Data {
     });
   }
 
-  // 获取 OCR 历史记录
+  /**
+   * 获取 OCR 历史记录列表
+   * @param {number} [start=0] 起始位置
+   * @param {number} [count=20] 获取数量
+   * @returns {Promise<Object>} 返回 {result, count, list/msg} 对象的 Promise
+   */
   async getOcrHistoryList(start = 0, count = 20) {
     // 获取 OCR 历史记录的总数量
     const ocrHistoryCount = await this.ocrHistoryCount();
@@ -490,7 +551,10 @@ module.exports = class Data {
     });
   }
 
-  // 获取腾讯 OCR 记录总览
+  /**
+   * 获取腾讯 OCR 记录总览数据
+   * @returns {Promise<Array>} 返回包含使用量统计的数组
+   */
   getTencentOcrHistoryOverview() {
     const dataList = []; // 用来存储查询出的数据
     const monthFirstDay = Datetime.monthFirstDayTimestamp();
@@ -573,7 +637,11 @@ module.exports = class Data {
     });
   }
 
-  // 清空指定提供商的 OCR 记录
+  /**
+   * 清空指定提供商的 OCR 记录
+   * @param {string} provider 服务提供商名称
+   * @returns {Promise<Object>} 返回 {result, count/msg} 对象的 Promise
+   */
   deleteAllOcrHistory(provider) {
     const sql = 'DELETE FROM ocr_history WHERE provider = ?';
     return new Promise(resolve => {
@@ -587,7 +655,10 @@ module.exports = class Data {
     });
   }
 
-  // 获取有道 OCR 记录总览
+  /**
+   * 获取有道 OCR 记录总览数据
+   * @returns {Promise<Array>} 返回包含使用量统计的数组
+   */
   getYoudaoOcrHistoryOverview() {
     const dataList = []; // 用来存储查询出的数据
     const monthFirstDay = Datetime.monthFirstDayTimestamp();
@@ -622,7 +693,10 @@ module.exports = class Data {
     });
   }
 
-  // 获取讯飞 OCR 记录总览
+  /**
+   * 获取讯飞 OCR 记录总览数据
+   * @returns {Promise<Array>} 返回包含使用量统计的数组
+   */
   getXunfeiOcrHistoryOverview() {
     const dataList = []; // 用来存储查询出的数据
     const monthFirstDay = Datetime.monthFirstDayTimestamp();
@@ -657,7 +731,10 @@ module.exports = class Data {
     });
   }
 
-  // 获取百度 OCR 记录总览
+  /**
+   * 获取百度 OCR 记录总览数据
+   * @returns {Promise<Array>} 返回包含使用量统计的数组
+   */
   getBaiduOcrHistoryOverview() {
     const dataList = []; // 用来存储查询出的数据
     const monthFirstDay = Datetime.monthFirstDayTimestamp();
@@ -708,7 +785,12 @@ module.exports = class Data {
     });
   }
 
-  // 添加翻译历史记录
+  /**
+   * 添加翻译历史记录
+   * @param {string} provider 翻译服务提供商名称
+   * @param {number} wordCount 翻译的字数
+   * @returns {Promise<Object>} 返回 {result, count/msg} 对象的 Promise
+   */
   addTranslationHistory(provider, wordCount) {
     // 获取时间戳
     const time = Math.round(new Date().getTime() / 1000);
@@ -736,7 +818,10 @@ module.exports = class Data {
     });
   }
 
-  // 创建翻译历史记录数据表
+  /**
+   * 创建翻译历史记录数据表
+   * @returns {Promise<Object>} 返回表创建结果 {result, count/msg}
+   */
   createTranslationHistoryTable() {
     const sql = `
     CREATE TABLE translation_history (
@@ -758,7 +843,11 @@ module.exports = class Data {
     });
   }
 
-  // 清空翻译历史记录
+  /**
+   * 清空指定提供商的翻译历史记录
+   * @param {string} provider 服务提供商名称
+   * @returns {Promise<Object>} 返回 {result, count/msg} 对象的 Promise
+   */
   deleteAllTranslationHistory(provider) {
     const sql = 'DELETE FROM translation_history WHERE provider = ?';
     return new Promise(resolve => {
@@ -772,7 +861,10 @@ module.exports = class Data {
     });
   }
 
-  // 获取翻译记录的数量
+  /**
+   * 获取翻译历史记录的数量
+   * @returns {Promise<number>} 返回记录数量的 Promise
+   */
   getTranslationHistoryCount() {
     const sql = 'SELECT COUNT(*) AS count FROM translation_history';
     return new Promise(resolve => {
@@ -786,7 +878,12 @@ module.exports = class Data {
     });
   }
 
-  // 获取翻译历史记录
+  /**
+   * 获取翻译历史记录列表
+   * @param {number} [start=0] 起始位置
+   * @param {number} [count=20] 获取数量
+   * @returns {Promise<Object>} 返回 {result, count, list/msg} 对象的 Promise
+   */
   getTranslationHistoryList(start = 0, count = 20) {
     const dataList = {};
 
@@ -816,7 +913,12 @@ module.exports = class Data {
     });
   }
 
-  // 获取翻译字数，用于总览数据
+  /**
+   * 获取翻译字数（用于总览数据统计）
+   * @param {number} [start=0] 起始时间戳
+   * @param {string} [provider='baidu'] 服务提供商名称
+   * @returns {Promise<number>} 返回翻译字数的 Promise
+   */
   getTranslationwordCount(start = 0, provider = 'baidu') {
     const sql = `
     SELECT SUM(word_count) AS count FROM translation_history
@@ -834,7 +936,10 @@ module.exports = class Data {
     });
   }
 
-  // 获取翻译历史记录总览数据
+  /**
+   * 获取翻译历史记录总览数据（包含所有提供商）
+   * @returns {Promise<Object>} 返回包含百度、腾讯、讯飞、有道四个提供商的统计数据
+   */
   async getTranslationHistoryOverview() {
     // 获取本月的时间戳
     const thisMonth = Datetime.monthFirstDayTimestamp();
@@ -886,7 +991,10 @@ module.exports = class Data {
     return {baidu: baidu, tencent: tencent, xunfei: xunfei, youdao: youdao};
   }
 
-  // OCR 历史记录的数据表是否存在
+  /**
+   * 检查 OCR 历史记录数据表是否存在
+   * @returns {Promise<Object>} 返回 {result, count/msg} 对象的 Promise
+   */
   ocrHistoryTableExists() {
     // 查询出 OCR 历史表格的数量
     const sql = `
@@ -904,7 +1012,10 @@ module.exports = class Data {
     });
   }
 
-  // 翻译历史记录的数据表是否存在
+  /**
+   * 检查翻译历史记录数据表是否存在
+   * @returns {Promise<Object>} 返回 {result, count/msg} 对象的 Promise
+   */
   translationHistoryTableExists() {
     // 查询出翻译记录表格的数量
     const sql = `
@@ -922,7 +1033,10 @@ module.exports = class Data {
     });
   }
 
-  // 存储选项的数据表是否存在
+  /**
+   * 检查选项数据表是否存在
+   * @returns {Promise<Object>} 返回 {result, count/msg} 对象的 Promise
+   */
   optionsTableExists() {
     // 查询出选项表格的数量
     const sql = `

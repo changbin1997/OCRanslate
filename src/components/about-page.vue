@@ -56,7 +56,10 @@
 export default {
   name: 'about-page',
   methods: {
-    // 通过浏览器打开链接
+    /**
+     * 通过浏览器打开链接
+     * @param {Event} ev 事件对象
+     */
     openLink(ev) {
       ev.preventDefault();
       const url = ev.target.href;

@@ -2,6 +2,11 @@ const {BrowserWindow, ipcMain} = require('electron');
 const path = require('path');
 const screenshotDesktop = require('screenshot-desktop');
 
+/**
+ * 打开屏幕区域选择窗口
+ * 该函数会截取当前屏幕，在全屏窗口中显示，允许用户框选区域
+ * @returns {Promise<Object>} 返回用户选择的区域信息 {left, top, width, height} 或错误对象 {result, msg}
+ */
 module.exports = () => {
   return new Promise( resolve => {
     // 截图

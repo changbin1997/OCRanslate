@@ -40,7 +40,10 @@ export default {
     }
   },
   methods: {
-    // 获取翻译历史记录
+    /**
+     * 获取翻译历史记录列表
+     * @returns {Promise<void|false>} 获取失败返回 false，成功时无返回值
+     */
     async getTranslationHistoryList() {
       // 要提交的数据
       const submitData = {
@@ -68,12 +71,18 @@ export default {
       // 计算总页数
       this.pageCount = Math.ceil(this.count / 20);
     },
-    // 下一页
+    /**
+     * 翻到下一页，并重新获取翻译历史记录
+     * @returns {void}
+     */
     nextPage() {
       this.pageNum ++;
       this.getTranslationHistoryList()
     },
-    // 上一页
+    /**
+     * 翻到上一页，并重新获取翻译历史记录
+     * @returns {void}
+     */
     previousPage() {
       this.pageNum --;
       this.getTranslationHistoryList()

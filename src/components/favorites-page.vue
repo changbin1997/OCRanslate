@@ -76,7 +76,11 @@ export default {
     }
   },
   methods: {
-    // 删除收藏
+    /**
+     * 删除指定索引的收藏记录，删除前有确认对话框
+     * @param {number} index 要删除的收藏在列表中的索引
+     * @returns {Promise<void|false>} 用户取消或删除失败返回 false，成功删除返回 void
+     */
     async deleteFavorite(index) {
       const result = await window.electronAPI.ipcRenderer.invoke('dialog', {
         name: 'showMessageBox',
@@ -116,7 +120,12 @@ export default {
         this.getFavorites();
       }
     },
-    // 通过语言代码获取语言名称
+    /**
+     * 通过语言代码和翻译提供商获取对应的语言名称
+     * @param {string} code 语言代码（如 'zh', 'en'）
+     * @param {string} provider 翻译提供商名称（'baidu', 'tencent', 'xunfei', 'youdao'）
+     * @returns {string} 语言名称，若未找到则返回原语言代码
+     */
     languageName(code, provider) {
       const language = languageList[provider].languageList2.find(item => item.code === code);
       if (language === undefined) {
@@ -125,7 +134,13 @@ export default {
         return language.name;
       }
     },
-    // 语音朗读
+    /**
+     * 朗读指定收藏的原文或译文内容
+     * @param {string} type 朗读类型，'src' 为原文，'dst' 为译文
+     * @param {number} index 收藏在列表中的索引
+     * @param {string} language 语言代码，用于选择对应语音库
+     * @returns {void|false} 语音库不存在返回 false，否则无返回值
+     */
     startVoice(type, index, language) {
       // 获取朗读文本
       const text = this.list[index][type].join("\n");
@@ -156,26 +171,40 @@ export default {
         }
       });
     },
-    // 拷贝文本
+    /**
+     * 复制指定收藏的原文或译文到系统剪贴板
+     * @param {string} type 复制类型，'src' 为原文，'dst' 为译文
+     * @param {number} index 收藏在列表中的索引
+     * @returns {void}
+     */
     copyText(type, index) {
       // 获取拷贝的文本
       const text = this.list[index][type].join("\n");
       // 发送拷贝请求
       window.electronAPI.ipcRenderer.invoke('copy-text', text);
     },
-    // 上一页
+    /**
+     * 翻到上一页并重新加载收藏列表
+     * @returns {void|false} 已在第一页返回 false，否则无返回值
+     */
     previousPage() {
       if (this.page <= 1) return false;
       this.page --;
       this.getFavorites();
     },
-    // 下一页
+    /**
+     * 翻到下一页并重新加载收藏列表
+     * @returns {void|false} 已在最后一页返回 false，否则无返回值
+     */
     nextPage() {
       if (this.page * 10 >= this.count) return false;
       this.page ++;
       this.getFavorites();
     },
-    // 获取收藏
+    /**
+     * 从数据库获取收藏列表数据，根据当前页码加载对应页的数据
+     * @returns {Promise<void|false>} 查询失败返回 false，成功返回 void
+     */
     async getFavorites() {
       // 发送 IPC 请求
       const result = await window.electronAPI.ipcRenderer.invoke('getFavorites', this.page * 10 - 10);

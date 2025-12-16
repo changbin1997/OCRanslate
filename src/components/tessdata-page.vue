@@ -56,7 +56,10 @@ export default {
     }
   },
   methods: {
-    // 打开模型文件目录
+    /**
+     * 打开 Tesseract OCR 语言模型文件所在的目录
+     * @returns {Promise<void>} 无返回值，失败时打开错误消息框
+     */
     async openDir() {
       const result = await window.electronAPI.ipcRenderer.invoke('openDir', '');
       if (result.result !== 'success') {
@@ -72,13 +75,20 @@ export default {
         });
       }
     },
-    // 通过浏览器打开链接
+    /**
+     * 通过系统默认浏览器打开外部链接
+     * @param {MouseEvent} ev 点击事件对象，含有目标 URL
+     * @returns {void}
+     */
     openLink(ev) {
       ev.preventDefault();
       const url = ev.target.href;
       window.electronAPI.ipcRenderer.send('openLink', url);
     },
-    // 获取文件列表
+    /**
+     * 获取 Tesseract OCR 语言模型文件列表，并更新页面数据
+     * @returns {Promise<void>}
+     */
     async getFileList() {
       const result = await window.electronAPI.ipcRenderer.invoke('getTesseractOcrFileList', '');
       this.downloadCount = result.count;

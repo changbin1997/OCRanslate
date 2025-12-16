@@ -11,6 +11,10 @@ module.exports = class ScreenshotOcr {
   available = {baidu: false, tencent: false, xunfei: false, youdao: false, tesseract: true};  // 功能可用性
   providerList = {baidu: '百度', tencent: '腾讯', xunfei: '讯飞', youdao: '有道', tesseract: 'Tesseract'};  // OCR 提供商名称
 
+  /**
+   * 初始化截图 OCR 模块
+   * @param {Object} options 配置对象，包含各 OCR 服务的 API 密钥
+   */
   constructor(options) {
     this.options = options;
     // 检查 百度 OCR API 是否可用
@@ -43,7 +47,16 @@ module.exports = class ScreenshotOcr {
     }
   }
 
-  // 指定区域识别
+  /**
+   * 对指定区域的屏幕进行截图并识别
+   * @param {string} provider OCR 服务提供商名称
+   * @param {string} ocrType OCR 识别类型
+   * @param {number} left 截取区域左上角 X 坐标
+   * @param {number} top 截取区域左上角 Y 坐标
+   * @param {number} width 截取区域宽度
+   * @param {number} height 截取区域高度
+   * @returns {Promise<Object>} 返回识别结果 {result, msg/text, img}
+   */
   async specificArea(provider, ocrType, left, top, width, height) {
     // 检查接口是否可用
     if (!this.available[provider]) {
@@ -78,7 +91,12 @@ module.exports = class ScreenshotOcr {
     return result;
   }
 
-  // 识别
+  /**
+   * 截图并进行 OCR 识别
+   * @param {string} provider OCR 服务提供商名称
+   * @param {string} ocrType OCR 识别类型
+   * @returns {Promise<Object|null>} 返回识别结果 {result, msg/text, img} 或 null（用户取消）
+   */
   async ocr(provider, ocrType) {
     // 检查接口是否可用
     if (!this.available[provider]) {
@@ -105,7 +123,10 @@ module.exports = class ScreenshotOcr {
     return result;
   }
 
-  // 截图
+  /**
+   * 打开截图工具进行截图
+   * @returns {Promise<string|null|Object>} 返回 Base64 格式的图片数据、null（用户取消）或错误对象
+   */
   screenshot() {
     return new Promise(resolve => {
       // 截图 dll 位置

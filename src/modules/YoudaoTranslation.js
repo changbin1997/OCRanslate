@@ -18,7 +18,13 @@ module.exports = class YoudaoTranslation {
     this.salt = crypto.randomUUID();
   }
 
-  // 翻译
+  /**
+   * 发送翻译请求到有道翻译 API
+   * @param {string} q 要翻译的文本
+   * @param {string} [from='auto'] 源语言，默认为自动识别
+   * @param {string} [to='zh-CHS'] 目标语言，默认为简体中文
+   * @returns {Promise<Object>} 返回 {result, msg/data} 对象的 Promise
+   */
   submit(q, from = 'auto', to = 'zh-CHS') {
     // 获取签名
     const sign = this.signature(q);
@@ -80,7 +86,11 @@ module.exports = class YoudaoTranslation {
     });
   }
 
-  // 生成签名
+  /**
+   * 生成签名
+   * @param {string} q 要签名的文本
+   * @returns {string} 签名哈希值
+   */
   signature(q) {
     let input = q;
     if (q.length > 20) input = `${q.slice(0, 10)}${q.length}${q.slice(-10)}`;

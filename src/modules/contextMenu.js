@@ -2,7 +2,13 @@ const {Menu} = require('electron');
 const ExportResult = require('./ExportResult');
 
 module.exports = class ContextMenu {
-  // 导出 OCR 识别结果菜单
+  /**
+   * 创建并弹出 OCR 识别结果导出菜单
+   * @param {number} x 菜单弹出位置的 X 坐标
+   * @param {number} y 菜单弹出位置的 Y 坐标
+   * @param {Object} result OCR 识别结果对象
+   * @returns {void}
+   */
   static exportOcrMenu(x, y, result) {
     // 菜单模板
     const menuTemplate = [
@@ -30,7 +36,13 @@ module.exports = class ContextMenu {
     });
   }
 
-  // 导出翻译结果菜单
+  /**
+   * 创建并弹出翻译结果导出菜单
+   * @param {number} x 菜单弹出位置的 X 坐标
+   * @param {number} y 菜单弹出位置的 Y 坐标
+   * @param {Object} result 翻译结果对象
+   * @returns {void}
+   */
   static exportTranslationMenu(x, y, result) {
     // 菜单模板
     const menuTemplate = [
@@ -58,7 +70,12 @@ module.exports = class ContextMenu {
     });
   }
 
-  // 用于表单的上下文菜单
+  /**
+   * 创建并弹出表单文本编辑上下文菜单
+   * @param {number} x 菜单弹出位置的 X 坐标
+   * @param {number} y 菜单弹出位置的 Y 坐标
+   * @returns {void}
+   */
   static inputMenu(x, y) {
     // 菜单模板
     const menuTemplate = [

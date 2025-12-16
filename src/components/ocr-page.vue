@@ -78,7 +78,11 @@ export default {
     }
   },
   methods: {
-    // 显示导出菜单
+    /**
+     * 显示导出菜单
+     * @description 如果有识别结果和图片，则获取导出按钮位置并发送导出菜单事件到主进程
+     * @returns {void|false} 当没有识别结果或图片时返回 false，否则无返回值
+     */
     exportMenu() {
       if (this.ocrText === '' || this.imgOptions.url === '') return false;
 
@@ -92,7 +96,11 @@ export default {
         result: ocrResult
       });
     },
-    // 显示文件对话框
+    /**
+     * 显示文件对话框并提交选中的图片文件进行识别
+     * @description 若已选择文件则调用 `submit` 提交文件；若未填写 API 则返回 false
+     * @returns {Promise<void|false>} 成功选择后返回 void，若 API 不可用则返回 false
+     */
     showFileDialog() {
       // 清空内容
       if (!this.showGuide) this.clear();
@@ -115,7 +123,11 @@ export default {
         }
       })
     },
-    // 处理文件拖拽
+    /**
+     * 处理文件拖拽事件并提交文件
+     * @param {DragEvent} ev 拖拽事件对象
+     * @returns {void|false} 如果 API 不可用返回 false，否则无返回值
+     */
     dragFile(ev) {
       ev.preventDefault();
       ev.stopPropagation();
@@ -125,12 +137,20 @@ export default {
       if (!this.apiAvailable()) return false;
       this.submit(ev.dataTransfer.files[0].path);
     },
-    // 阻止拖拽的默认事件
+    /**
+     * 阻止拖拽相关事件的默认行为和冒泡
+     * @param {Event} ev 事件对象
+     * @returns {void}
+     */
     preventDefault(ev) {
       ev.preventDefault();
       ev.stopPropagation();
     },
-    // 提交
+    /**
+     * 提交图片文件并执行 OCR 识别流程
+     * @param {string} fileName 要识别的图片文件路径
+     * @returns {Promise<void|false>} 若文件非图片或识别出错则返回 false，否则返回 void
+     */
     async submit(fileName) {
       // 清除 vuex 存储的自动执行
       this.$store.commit('changeAuto', '');
@@ -202,7 +222,10 @@ export default {
         this.toTranslationPage();
       }
     },
-    // 清除识别结果
+    /**
+     * 清除当前识别结果、图片显示与自动执行状态
+     * @returns {void}
+     */
     clear() {
       this.ocrText = '';
       this.imgOptions.url = '';
@@ -211,13 +234,19 @@ export default {
       this.voice.stop();
       this.$store.commit('changeAuto', '');
     },
-    // 拷贝识别结果
+    /**
+     * 将识别结果复制到系统剪贴板
+     * @returns {void|false} 若无识别结果返回 false，否则无返回值
+     */
     copyText() {
       if (this.ocrText === '') return false;
       // 发送拷贝请求
       window.electronAPI.ipcRenderer.invoke('copy-text', this.ocrText);
     },
-    // 转到翻译
+    /**
+     * 跳转到翻译页面并将当前识别文本保存到 Vuex
+     * @returns {void|false} 若无识别结果返回 false，否则无返回值
+     */
     toTranslationPage() {
       if (this.ocrText === '') return false;
       // 把需要翻译的内容放到 Vuex
@@ -228,7 +257,10 @@ export default {
         query: {ocrTranslation: this.ocrText.length}
       });
     },
-    // 开始语音朗读
+    /**
+     * 使用语音模块朗读当前识别文本
+     * @returns {void|false} 若无识别结果返回 false，否则无返回值
+     */
     startVoice() {
       if (this.ocrText === '') return false;
       this.voice.start({
@@ -243,7 +275,10 @@ export default {
         }
       });
     },
-    // 初始化语音朗读
+    /**
+     * 初始化语音朗读实例，根据设置配置音量与速度
+     * @returns {void}
+     */
     voiceInit() {
       // 初始化语音朗读
       const config = {
@@ -255,7 +290,10 @@ export default {
       }
       this.voice = new Voice(config);
     },
-    // 检查是否填写了 API 密钥
+    /**
+     * 检查并设置各 OCR 提供商的 API 可用性状态
+     * @returns {void}
+     */
     apiInit() {
       // 检查百度 OCR API 密钥是否填写
       if (
@@ -308,7 +346,10 @@ export default {
         localStorage.setItem('ocr_api_message', '已提示');
       }
     },
-    // 检查当前使用的 API 是否填写密钥信息
+    /**
+     * 检查当前选择的 OCR 提供商是否已填写 API 密钥信息
+     * @returns {boolean} 若当前选择的提供商可用则返回 true，否则返回 false
+     */
     apiAvailable() {
       const providerName = {baidu: '百度', tencent: '腾讯', xunfei: '讯飞', youdao: '有道', tesseract: 'Tesseract'};
       let status = true;
@@ -331,7 +372,10 @@ export default {
       }
       return status;
     },
-    // 显示 OCR 识别结果（快捷键调用）
+    /**
+     * 显示 Vuex 中存储的 OCR 识别结果（通常由快捷键触发）
+     * @returns {void|false} 若 Vuex 中无结果返回 false，否则无返回值
+     */
     showOcrResult() {
       // 如果 Vuex 中没有数据就直接返回
       if (this.$store.state.ocrResult === null) return false;
@@ -350,7 +394,11 @@ export default {
       }
       if (this.$store.state.auto === '识别完成后自动翻译和朗读译文') this.toTranslationPage();
     },
-    // 上下文菜单
+    /**
+     * 显示文本框的上下文菜单（右键菜单）
+     * @param {MouseEvent} ev 鼠标事件对象
+     * @returns {void}
+     */
     contextMenu(ev) {
       ev.preventDefault();
       const client = {

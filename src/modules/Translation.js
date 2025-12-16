@@ -8,12 +8,22 @@ module.exports = class Translation {
   options = null;
   data = null;
 
+  /**
+   * 初始化翻译模块
+   * @param {Object} optionsObj 配置对象
+   */
   constructor(optionsObj) {
     this.options = optionsObj;
     this.data = new Data();
   }
 
-  // 翻译
+  /**
+   * 根据配置的翻译服务提供商进行翻译
+   * @param {string} q 要翻译的文本
+   * @param {string} [from='auto'] 源语言，默认为自动识别
+   * @param {string} [to='zh'] 目标语言，默认为中文
+   * @returns {Promise<Object>} 返回翻译结果 Promise，成功时为 {result, data}，失败时为 {result, msg}
+   */
   async translation(q, from = 'auto', to = 'zh') {
     // 根据设置的翻译接口调用翻译
     const result = await this[this.options.translationProvider](q, from, to);
@@ -25,13 +35,25 @@ module.exports = class Translation {
     return result;
   }
 
-  // 百度翻译
+  /**
+   * 使用百度翻译进行文本翻译
+   * @param {string} q 要翻译的文本
+   * @param {string} [from='auto'] 源语言，默认为自动识别
+   * @param {string} [to='zh'] 目标语言，默认为中文
+   * @returns {Promise<Object>} 返回翻译结果 Promise
+   */
   async baidu(q, from = 'auto', to = 'zh') {
     const baiduTranslation = new BaiduTranslation(this.options);
     return await  baiduTranslation.send(q, from, to);
   }
 
-  // 有道翻译
+  /**
+   * 使用有道翻译进行文本翻译
+   * @param {string} q 要翻译的文本
+   * @param {string} [from='auto'] 源语言，默认为自动识别
+   * @param {string} [to='zh-CHS'] 目标语言，默认为简体中文
+   * @returns {Promise<Object>} 返回翻译结果 Promise
+   */
   async youdao(q, from = 'auto', to = 'zh-CHS') {
     const appid = this.options.youdaoOcrAppID;
     const appkey = this.options.youdaoOcrAppKey;
@@ -39,7 +61,13 @@ module.exports = class Translation {
     return youdaoTranslation.submit(q, from, to);
   }
 
-  // 讯飞翻译
+  /**
+   * 使用讯飞翻译进行文本翻译
+   * @param {string} q 要翻译的文本
+   * @param {string} [from='en'] 源语言，默认为英文
+   * @param {string} [to='cn'] 目标语言，默认为中文
+   * @returns {Promise<Object>} 返回翻译结果 Promise
+   */
   async xunfei(q, from = 'en', to = 'cn') {
     const APPId = this.options.xunfeiOcrAPPId;
     const APISecret = this.options.xunfeiOcrAPISecret;
@@ -48,7 +76,13 @@ module.exports = class Translation {
     return xunfeiTranslation.submit(q, from, to);
   }
 
-  // 腾讯翻译
+  /**
+   * 使用腾讯翻译进行文本翻译
+   * @param {string} q 要翻译的文本
+   * @param {string} [from='auto'] 源语言，默认为自动识别
+   * @param {string} [to='zh'] 目标语言，默认为中文
+   * @returns {Promise<Object>} 返回翻译结果 Promise，使用与百度翻译相同的格式
+   */
   tencent(q, from = 'auto', to = 'zh') {
     // 腾讯翻译 API 配置信息
     const clientConfig = {

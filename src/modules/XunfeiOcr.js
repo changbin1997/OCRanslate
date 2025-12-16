@@ -9,13 +9,24 @@ module.exports = class XunfeiOcr {
   APISecret = '';
   APIKey = '';
 
+  /**
+   * 初始化讯飞 OCR
+   * @param {string} APPId 应用 ID
+   * @param {string} APISecret API 密钥
+   * @param {string} APIKey API 钥匙
+   */
   constructor(APPId, APISecret, APIKey) {
     this.APPId = APPId;
     this.APISecret = APISecret;
     this.APIKey = APIKey;
   }
 
-  // 发送请求
+  /**
+   * 发送 OCR 识别请求到讯飞 API
+   * @param {string} base64Img Base64 编码的图片数据
+   * @param {string} imgType 图片类型（如 base64、url 等）
+   * @returns {Promise<Object>} 返回 {result, list/msg} 对象的 Promise，成功时包含识别出的文字列表
+   */
   submit(base64Img, imgType) {
     // 要提交的数据
     const submitData = {
@@ -93,7 +104,10 @@ module.exports = class XunfeiOcr {
     });
   }
 
-  // 生成 authorization
+  /**
+   * 生成 Authorization 认证头
+   * @returns {string} 返回 Base64 编码的 Authorization 认证字符串
+   */
   getAuthorization() {
     // 生成时间戳，RFC1123格式("EEE, dd MMM yyyy HH:mm:ss z")
     this.date = new Date().toUTCString();
