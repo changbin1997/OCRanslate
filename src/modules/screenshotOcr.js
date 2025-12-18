@@ -7,9 +7,25 @@ const screenshotDesktop = require('screenshot-desktop');
 const jimp = require('jimp');
 
 module.exports = class ScreenshotOcr {
-  options = null;  // 选项
-  available = {baidu: false, tencent: false, xunfei: false, youdao: false, tesseract: true};  // 功能可用性
-  providerList = {baidu: '百度', tencent: '腾讯', xunfei: '讯飞', youdao: '有道', tesseract: 'Tesseract'};  // OCR 提供商名称
+  options = null; // 选项
+  // 功能可用性
+  available = {
+    baidu: false,
+    tencent: false,
+    xunfei: false,
+    youdao: false,
+    ali: false,
+    tesseract: true
+  };
+  // OCR 提供商名称
+  providerList = {
+    baidu: '百度',
+    tencent: '腾讯',
+    xunfei: '讯飞',
+    youdao: '有道',
+    ali: '阿里',
+    tesseract: 'Tesseract'
+  };
 
   /**
    * 初始化截图 OCR 模块
@@ -42,8 +58,18 @@ module.exports = class ScreenshotOcr {
       this.available.xunfei = true;
     }
     // 检查有道 OCR API 是否可用
-    if (this.options.youdaoOcrAppID !== '' && this.options.youdaoOcrAppKey !== '') {
+    if (
+      this.options.youdaoOcrAppID !== '' &&
+      this.options.youdaoOcrAppKey !== ''
+    ) {
       this.available.youdao = true;
+    }
+    // 检查阿里 OCR API 是否可用
+    if (
+      this.options.aliyunAccessKeyID !== '' &&
+      this.options.aliyunAccessKeySecret !== ''
+    ) {
+      this.available.ali = true;
     }
   }
 
@@ -60,7 +86,10 @@ module.exports = class ScreenshotOcr {
   async specificArea(provider, ocrType, left, top, width, height) {
     // 检查接口是否可用
     if (!this.available[provider]) {
-      return {result: 'error', msg: `缺少 ${this.providerList[provider]} API 密钥！`};
+      return {
+        result: 'error',
+        msg: `缺少 ${this.providerList[provider]} API 密钥！`
+      };
     }
     // 截图和裁剪图片
     let img = null;
@@ -72,8 +101,8 @@ module.exports = class ScreenshotOcr {
       img = await img.crop(left, top, width, height);
       img = await img.getBufferAsync(jimp.MIME_JPEG);
       img = img.toString('base64');
-    }catch (error) {
-      return {result: 'error', msg: error.message};
+    } catch (error) {
+      return { result: 'error', msg: error.message };
     }
     // 调用 OCR 识别
     const ocr = new Ocr(this.options);
@@ -81,7 +110,7 @@ module.exports = class ScreenshotOcr {
     if (provider === 'tesseract') {
       // tesseractOCR
       result = await ocr.tesseract(`data:image/png;base64,${img}`);
-    }else {
+    } else {
       // 其它 OCR
       result = await ocr[provider](ocrType, img);
     }
@@ -100,7 +129,10 @@ module.exports = class ScreenshotOcr {
   async ocr(provider, ocrType) {
     // 检查接口是否可用
     if (!this.available[provider]) {
-      return {result: 'error', msg: `缺少 ${this.providerList[provider]} API 密钥！`};
+      return {
+        result: 'error',
+        msg: `缺少 ${this.providerList[provider]} API 密钥！`
+      };
     }
     // 调用截图
     const img = await this.screenshot();
@@ -114,7 +146,7 @@ module.exports = class ScreenshotOcr {
     // tesseractOCR
     if (provider === 'tesseract') {
       result = await ocr.tesseract(`data:image/png;base64,${img}`);
-    }else {
+    } else {
       result = await ocr[provider](ocrType, img);
     }
     // 识别出错
@@ -128,29 +160,35 @@ module.exports = class ScreenshotOcr {
    * @returns {Promise<string|null|Object>} 返回 Base64 格式的图片数据、null（用户取消）或错误对象
    */
   screenshot() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       // 截图 dll 位置
       const screenshotModule = {
         dll: path.join(process.cwd(), 'dll', 'PrScrn.dll'),
         exe: path.join(process.cwd(), 'dll', 'PrintScr.exe')
       };
       // 检测截图 exe 是否存在
-      fs.exists(screenshotModule.exe, exists => {
+      fs.exists(screenshotModule.exe, (exists) => {
         // 如果截图 exe 不存在就直接返回
         if (!exists) {
-          resolve({result: 'error', msg: `找不到 ${screenshotModule.exe} 文件`});
+          resolve({
+            result: 'error',
+            msg: `找不到 ${screenshotModule.exe} 文件`
+          });
           return false;
         }
         // 检测截图 dll 是否存在
-        fs.exists(screenshotModule.dll, dllExists => {
+        fs.exists(screenshotModule.dll, (dllExists) => {
           if (!dllExists) {
-            resolve({result: 'error', msg: `找不到 ${screenshotModule.dll} 文件`});
+            resolve({
+              result: 'error',
+              msg: `找不到 ${screenshotModule.dll} 文件`
+            });
             return false;
           }
           // 打开截图程序
           const screenWindow = child_process.execFile(screenshotModule.exe);
           // 截图程序被关闭
-          screenWindow.on('exit', code => {
+          screenWindow.on('exit', (code) => {
             // 是否成功截图
             if (code) {
               // 从剪贴板读取图片
@@ -158,7 +196,7 @@ module.exports = class ScreenshotOcr {
               // 把图片转为 base64
               img = img.toPNG().toString('base64');
               resolve(img);
-            }else {
+            } else {
               resolve(null);
             }
           });

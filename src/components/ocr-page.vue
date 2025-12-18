@@ -66,6 +66,8 @@ export default {
         {provider: 'tencent', name: '腾讯云通用印刷体识别（高速版）'},
         {provider: 'xunfei', name: '科大讯飞通用文字识别'},
         {provider: 'youdao', name: '有道智云通用文字识别'},
+        {provider: 'ali', name: '阿里云通用文字识别'},
+        {provider: 'ali', name: '阿里云全文识别高精版'},
         {provider: 'tesseract', name: 'TesseractOCR（离线识别）'}
       ],
       ocrTypeSelectde: '百度云通用文字识别（标准版）',
@@ -74,7 +76,15 @@ export default {
       ocrText: '',
       voice: null,
       disabledVoiceBtn: false,
-      available: {baidu: false, tencent: false, detect: false, xunfei: false, youdao: false, tesseract: true}
+      available: {
+        baidu: false, 
+        tencent: false, 
+        detect: false, 
+        xunfei: false, 
+        youdao: false, 
+        ali: false, 
+        tesseract: true
+      }
     }
   },
   methods: {
@@ -297,39 +307,52 @@ export default {
     apiInit() {
       // 检查百度 OCR API 密钥是否填写
       if (
-          this.$store.state.options.baiduOcrAppID !== '' &&
-          this.$store.state.options.baiduOcrApiKey !== '' &&
-          this.$store.state.options.baiduOcrSecretKey !== ''
+        this.$store.state.options.baiduOcrAppID !== '' &&
+        this.$store.state.options.baiduOcrApiKey !== '' &&
+        this.$store.state.options.baiduOcrSecretKey !== ''
       ) {
         this.available.baidu = true;
       }
       // 检查腾讯 OCR 密钥是否填写
       if (
-          this.$store.state.options.tencentOcrAppID !== '' &&
-          this.$store.state.options.tencentOcrSecretID !== '' &&
-          this.$store.state.options.tencentOcrSecretKey !== ''
+        this.$store.state.options.tencentOcrAppID !== '' &&
+        this.$store.state.options.tencentOcrSecretID !== '' &&
+        this.$store.state.options.tencentOcrSecretKey !== ''
       ) {
         this.available.tencent = true;
       }
       // 检查讯飞 OCR 密钥是否填写
       if (
-          this.$store.state.options.xunfeiOcrAPPId !== "" &&
-          this.$store.state.options.xunfeiOcrAPISecret !== '' &&
-          this.$store.state.options.xunfeiOcrAPIKey !== ''
+        this.$store.state.options.xunfeiOcrAPPId !== "" &&
+        this.$store.state.options.xunfeiOcrAPISecret !== '' &&
+        this.$store.state.options.xunfeiOcrAPIKey !== ''
       ) {
         this.available.xunfei = true;
       }
       // 检查有道智云 OCR 密钥是否填写
       if (
-          this.$store.state.options.youdaoOcrAppID !== '' &&
-          this.$store.state.options.youdaoOcrAppKey !== ''
+        this.$store.state.options.youdaoOcrAppID !== '' &&
+        this.$store.state.options.youdaoOcrAppKey !== ''
       ) {
         this.available.youdao = true;
+      }
+      // 检查阿里云 OCR API 信息是否填写
+      if (
+        this.$store.state.options.aliyunAccessKeyID !== '' &&
+        this.$store.state.options.aliyunAccessKeySecret !== ''
+      ) {
+        this.available.ali = true;
       }
       // 把检测状态设置为 true
       this.available.detect = true;
       // 如果没有填写任何 API 信息就弹出提示
-      if (!this.available.baidu && !this.available.tencent && !this.available.xunfei && !this.available.youdao) {
+      if (
+        !this.available.baidu && 
+        !this.available.tencent && 
+        !this.available.xunfei && 
+        !this.available.youdao &&
+        !this.available.ali
+      ) {
         // 是否已经显示过 API 提示
         const ocrApiMessage = localStorage.getItem('ocr_api_message');
         if (ocrApiMessage === '已提示') return true;
@@ -351,7 +374,7 @@ export default {
      * @returns {boolean} 若当前选择的提供商可用则返回 true，否则返回 false
      */
     apiAvailable() {
-      const providerName = {baidu: '百度', tencent: '腾讯', xunfei: '讯飞', youdao: '有道', tesseract: 'Tesseract'};
+      const providerName = {baidu: '百度', tencent: '腾讯', xunfei: '讯飞', youdao: '有道', ali: '阿里', tesseract: 'Tesseract'};
       let status = true;
       // 获取 OCR 提供商
       for (let i = 0;i < this.ocrType.length;i ++) {

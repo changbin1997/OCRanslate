@@ -68,6 +68,23 @@
       </div>
     </div>
     <hr>
+    <!--阿里云 OCR 记录-->
+    <h2 class="mb-3">阿里云 OCR 记录</h2>
+    <div class="row">
+      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="(item, index) of ali" :key="index">
+        <div class="data-box">
+          <h3 class="text-center">{{item.count}}</h3>
+          <p class="text-center mb-2">{{item.name}}</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-if="ali.length">
+        <div class="data-box" tabindex="0" role="button" @click="deleteOcrHistory('ali')">
+          <h3 class="text-center">删除</h3>
+          <p class="text-center mb-2">删除阿里OCR数据</p>
+        </div>
+      </div>
+    </div>
+    <hr>
     <!--百度翻译记录-->
     <h2 class="mb-3">百度翻译记录</h2>
     <div class="row">
@@ -147,6 +164,7 @@ export default {
       tencent: [],
       xunfei: [],
       youdao: [],
+      ali: [],
       baiduTranslation: [],
       tencentTranslation: [],
       xunfeiTranslation: [],
@@ -164,6 +182,7 @@ export default {
         this.tencent = result.tencent;
         this.xunfei = result.xunfei;
         this.youdao = result.youdao;
+        this.ali = result.ali;
       });
     },
     /**
@@ -180,7 +199,7 @@ export default {
       if (count < 1) return false;
 
       // 删除确认
-      const providerName = {baidu: '百度', tencent: '腾讯', xunfei: '讯飞', youdao: '有道'};
+      const providerName = {baidu: '百度', tencent: '腾讯', xunfei: '讯飞', youdao: '有道', ali: '阿里'};
       const result = await window.electronAPI.ipcRenderer.invoke('dialog', {
         name: 'showMessageBox',
         options: {

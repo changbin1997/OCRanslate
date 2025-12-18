@@ -7,6 +7,7 @@ const path = require('path');
 const Data = require('./Data');
 const XunfeiOcr = require('./XunfeiOcr');
 const YoudaoOcr = require('./YoudaoOcr');
+const AliyunOCR = require('./AliyunOCR');
 
 module.exports = class Ocr {
   options = null;
@@ -175,6 +176,30 @@ module.exports = class Ocr {
     // 如果成功就添加 OCR 历史记录
     if (result.msg === undefined && result.code === undefined) {
       await this.data.addOcrHistory('youdao', type);
+    }
+    return result;
+  }
+
+  /**
+   * 使用阿里云 OCR 进行文字识别
+   * @param {string} type 识别类型
+   * @param {string} base64File Base64 编码的图片数据
+   * @returns {Promise<Object>} 返回识别结果 Promise
+   */
+  async ali(type, base64File) {
+    const aliyunOCR = new AliyunOCR(this.options.aliyunAccessKeyID, this.options.aliyunAccessKeySecret);
+    let result = null;
+    // 根据选择的接口名称调用识别
+    if (type === '阿里云通用文字识别') {
+      result = await aliyunOCR.recognizeGeneral(base64File);
+    }else if (type === '阿里云全文识别高精版') {
+      result = await aliyunOCR.recognizeAdvanced(base64File);
+    }else {
+      return {result: 'error', msg: '不支持的 API 接口！'};
+    }
+    // 如果成功就把识别记录添加到数据库
+    if (result.result === 'success') {
+      await this.data.addOcrHistory('ali', type);
     }
     return result;
   }

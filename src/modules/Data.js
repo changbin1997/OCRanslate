@@ -294,6 +294,8 @@ module.exports = class Data {
       tencentOcrSecretKey: '',
       tencentOcrLanguageSelected: 'zh_rare',
       tencentOcrRegionSelected: 'ap-shanghai',
+      aliyunAccessKeyID: '',
+      aliyunAccessKeySecret: '',
       baiduTranslationAppID: '',
       baiduTranslationApiKey: '',
       translationProvider: 'baidu',
@@ -714,6 +716,60 @@ module.exports = class Data {
         WHERE provider = ? AND ocr_time > ?
         `,
         values: ['xunfei', monthFirstDay]
+      }
+    ];
+
+    return new Promise(resolve => {
+      // 执行 SQL
+      sqlList.forEach(item => {
+        this.db.get(item.sql, item.values, (err, row) => {
+          dataList.push({
+            name: item.name,
+            count: row['COUNT(*)']
+          });
+          if (dataList.length >= sqlList.length) resolve(dataList);
+        });
+      });
+    });
+  }
+
+  /**
+   * 获取阿里 OCR 总览数据
+   * @returns {Promise<Array>} 返回包含使用量统计的数组
+   */
+  getAliOcrHistoryOverview() {
+    const dataList = []; // 用来存储查询出的数据
+    const monthFirstDay = Datetime.monthFirstDayTimestamp();
+    // 要执行的 SQL
+    const sqlList = [
+      {
+        name: '阿里 OCR 总使用量',
+        sql: `SELECT COUNT(*) FROM ocr_history WHERE provider = ?`,
+        values: ['ali']
+      },
+      {
+        name: '本月阿里 OCR 使用量',
+        sql: `
+        SELECT COUNT(*) FROM ocr_history
+        WHERE provider = ? AND ocr_time > ?
+        `,
+        values: ['ali', monthFirstDay]
+      },
+      {
+        name: '本月阿里云通用文字识别使用量',
+        sql: `
+        SELECT COUNT(*) FROM ocr_history
+        WHERE name = ? AND ocr_time > ?
+        `,
+        values: ['阿里云通用文字识别', monthFirstDay]
+      },
+      {
+        name: '本月阿里云全文识别高精版使用量',
+        sql: `
+        SELECT COUNT(*) FROM ocr_history
+        WHERE name = ? AND ocr_time > ?
+        `,
+        values: ['阿里云全文识别高精版', monthFirstDay]
       }
     ];
 

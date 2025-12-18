@@ -295,12 +295,14 @@ module.exports = class MyApp {
       const tencentData = await this.data.getTencentOcrHistoryOverview();
       const xunfeiData = await this.data.getXunfeiOcrHistoryOverview();
       const youdaoData = await this.data.getYoudaoOcrHistoryOverview();
+      const ali = await this.data.getAliOcrHistoryOverview();
 
       return {
         baidu: baiduData,
         tencent: tencentData,
         xunfei: xunfeiData,
-        youdao: youdaoData
+        youdao: youdaoData,
+        ali: ali
       };
     });
 

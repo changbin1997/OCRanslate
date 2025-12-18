@@ -18,6 +18,7 @@
           <li><a href="javascript:;" @click="scrollToSection('#tencent-api-title')">腾讯 API 接口</a></li>
           <li><a href="javascript:;" @click="scrollToSection('#xunfei-api-title')">科大讯飞 API 接口</a></li>
           <li><a href="javascript:;" @click="scrollToSection('#youdao-api-title')">有道智云 API 接口</a></li>
+          <li><a href="javascript:;" @click="scrollToSection('#ali-api-title')">阿里云 API 接口</a></li>
           <li><a href="javascript:;" @click="scrollToSection('#tesseract-ocr-title')">TesseractOCR（离线识别）</a></li>
           <li><a href="javascript:;" @click="scrollToSection('#baidu-translation-title')">百度翻译接口</a></li>
           <li><a href="javascript:;" @click="scrollToSection('#translation-provider-title')">翻译引擎设置</a></li>
@@ -116,6 +117,19 @@
             <select id="youdao-ocr-language-selected" class="form-select" v-model="optionsSelected.youdaoOcrLanguageSelected">
               <option v-for="(item, index) of youdaoOcrLanguageList" :key="index" v-bind:value="item.code">{{item.name}}</option>
             </select>
+          </div>
+        </div>
+        <div class="mb-4"></div>
+        <!--阿里云OCR接口-->
+        <p class="mb-2" id="ali-api-title"><b>阿里云 API 接口</b></p>
+        <div aria-label="阿里云 API 接口" role="group">
+          <div class="mb-3">
+            <label for="aliyun-accesskey-id" class="form-label">AccessKey ID</label>
+            <input type="text" id="aliyun-accesskey-id" class="form-control" placeholder="阿里云的 AccessKey ID" v-model="optionsSelected.aliyunAccessKeyID">
+          </div>
+          <div class="mb-3">
+            <label for="aliyun-accesskey-secret" class="form-label">AccessKey Secret</label>
+            <input type="text" id="aliyun-accesskey-secret" class="form-control" placeholder="阿里云的 AccessKey Secret" v-model="optionsSelected.aliyunAccessKeySecret">
           </div>
         </div>
         <div class="mb-4"></div>
@@ -388,6 +402,8 @@ export default {
         tencentOcrSecretKey: '',
         tencentOcrLanguageSelected: 'zh_rare',
         tencentOcrRegionSelected: 'ap-shanghai',
+        aliyunAccessKeyID: '',
+        aliyunAccessKeySecret: '',
         baiduTranslationAppID: '',
         baiduTranslationApiKey: '',
         translationProvider: 'baidu',
@@ -434,6 +450,8 @@ export default {
         {provider: 'tencent', name: '腾讯云通用印刷体识别（高速版）'},
         {provider: 'xunfei', name: '科大讯飞通用文字识别'},
         {provider: 'youdao', name: '有道智云通用文字识别'},
+        {provider: 'ali', name: '阿里云通用文字识别'},
+        {provider: 'ali', name: '阿里云全文识别高精版'},
         {provider: 'tesseract', name: 'TesseractOCR（离线识别）'}
       ],
       synth: null,

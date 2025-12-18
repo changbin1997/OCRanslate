@@ -36,7 +36,7 @@ export default {
       ocrList: [],
       pageCount: 0,
       pageNum: 1,
-      provider: {baidu: '百度', tencent: '腾讯', xunfei: '科大讯飞', youdao: '有道'}
+      provider: {baidu: '百度', tencent: '腾讯', xunfei: '科大讯飞', youdao: '有道', ali: '阿里'}
     }
   },
   methods: {

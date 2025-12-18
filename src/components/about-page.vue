@@ -13,6 +13,8 @@
         <li>腾讯文字识别API2022 - 通用印刷体识别（精简版）</li>
         <li>腾讯文字识别API2022 - 通用印刷体识别（高速版）</li>
         <li>科大讯飞 - 通用文字识别</li>
+        <li>阿里云 - 通用文字识别 - 通用文字识别</li>
+        <li>阿里云 - 通用文字识别 - 全文识别高精版</li>
         <li>有道智云 - 通用文字识别</li>
         <li>百度翻译 - 通用文本翻译</li>
         <li>腾讯机器翻译 - 文本翻译</li>
@@ -30,6 +32,7 @@
       <p>腾讯 OCR：<a href="https://cloud.tencent.com/product/ocr-catalog" @click="openLink">https://cloud.tencent.com/product/ocr-catalog</a></p>
       <p>科大讯飞 OCR：<a href="https://www.xfyun.cn/services/common-ocr" @click="openLink">https://www.xfyun.cn/services/common-ocr</a></p>
       <p>有道智云 OCR：<a href="https://ai.youdao.com/product-ocr-print.s" @click="openLink">https://ai.youdao.com/product-ocr-print.s</a></p>
+      <p>阿里云 OCR：<a href="https://ai.aliyun.com/ocr" @click="openLink">https://ai.aliyun.com/ocr</a></p>
       <p>百度翻译：<a href="https://fanyi-api.baidu.com/" @click="openLink">https://fanyi-api.baidu.com/</a></p>
       <p>腾讯机器翻译：<a href="https://cloud.tencent.com/product/tmt" @click="openLink">https://cloud.tencent.com/product/tmt</a></p>
       <p>讯飞翻译：<a href="https://www.xfyun.cn/services/xftrans" @click="openLink">https://www.xfyun.cn/services/xftrans</a></p>
@@ -38,6 +41,7 @@
       <ul>
         <li>百度通用文字识别：每月 1000 次免费</li>
         <li>腾讯通用文字识别：每月 1000 次免费</li>
+        <li>阿里云通用文字识别：每月 200 次免费</li>
         <li>讯飞通用文字识别：注册后免费 10 万次</li>
         <li>百度翻译 - 通用文本翻译：每月 50000 - 1000000 字免费</li>
         <li>腾讯机器翻译 - 文本翻译：每月 5000000 字免费</li>
