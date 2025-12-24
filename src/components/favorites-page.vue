@@ -127,7 +127,7 @@ export default {
      * @returns {string} 语言名称，若未找到则返回原语言代码
      */
     languageName(code, provider) {
-      const language = languageList[provider].languageList2.find(item => item.code === code);
+      const language = languageList[provider].find(item => item.code === code);
       if (language === undefined) {
         return code;
       }else {

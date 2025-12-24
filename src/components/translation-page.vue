@@ -66,8 +66,8 @@ export default {
     return {
       languageSelected1: 'auto',
       languageSelected2: 'zh',
-      languageList1: languageList[this.$store.state.options.translationProvider].languageList1,
-      languageList2: languageList[this.$store.state.options.translationProvider].languageList2,
+      languageList1: languageList[this.$store.state.options.translationProvider],
+      languageList2: [...languageList[this.$store.state.options.translationProvider]],
       resultText: '',
       originalText: '',
       disabledSubmitBtn: false,
@@ -76,7 +76,8 @@ export default {
       available: false,
       translationResult: null,
       favorite: false,
-      favoriteId: null
+      favoriteId: null,
+      providerName: {baidu: '百度翻译', tencent: '腾讯翻译', xunfei: '讯飞翻译', youdao: '有道翻译'}
     }
   },
   methods: {
@@ -163,7 +164,7 @@ export default {
      * @param {MouseEvent} ev 事件对象（未实际使用）
      * @returns {void|false} 若无翻译结果则返回 false，否则无返回值
      */
-    exportMenu(ev) {
+    exportMenu() {
       if (this.translationResult === null) return false;
       // 获取翻译结果
       const exportResult = {
@@ -205,7 +206,7 @@ export default {
           name: 'showMessageBox',
           options: {
             title: '文件过大',
-            message: '您选择的文件大小已经达到 10KB，可能会超出百度翻译 API 的字符数限制！',
+            message: '您选择的文件大小已经达到 10KB，大多数翻译 API 的字符数上线是 5000，您的字符数可能会超出限制！',
             buttons: ['知道了'],
             type: 'warning',
             noLink: true
@@ -217,7 +218,7 @@ export default {
           name: 'showMessageBox',
           options: {
             title: '文件过大',
-            message: '您选择的文件已经达到 50KB，已经超出了百度翻译 API 的字符数限制！',
+            message: '您选择的文件已经达到 50KB，已经超出了大多数翻译 API 的字符数限制！',
             buttons: ['知道了'],
             type: 'error',
             noLink: true
@@ -258,7 +259,7 @@ export default {
           name: 'showMessageBox',
           options: {
             title: '没有填写 API 密钥',
-            message: '您还没有填写百度翻译的 API 密钥信息，目前翻译功能暂不可用，请在设置中填写百度翻译的 API 密钥信息！',
+            message: `您还没有填写 ${this.providerName[this.$store.state.options.translationProvider]} 的 API 密钥信息，目前 ${this.providerName[this.$store.state.options.translationProvider]} 暂不可用，请在设置中填写 ${this.providerName[this.$store.state.options.translationProvider]} 的 API 密钥信息！`,
             buttons: ['知道了'],
             type: 'info',
             noLink: true
@@ -486,12 +487,11 @@ export default {
       }
       // 如果没有填写 API 密钥就弹出提示
       if (!this.available) {
-        const providerName = {baidu: '百度翻译', tencent: '腾讯', xunfei: '讯飞', youdao: '有道'};
         window.electronAPI.ipcRenderer.invoke('dialog', {
           name: 'showMessageBox',
           options: {
             title: '没有填写 API 密钥',
-            message: `您当前使用的翻译引擎是 ${providerName[this.$store.state.options.translationProvider]}，您还没有填写 ${providerName[this.$store.state.options.translationProvider]} 的 API 密钥信息，请在设置中填写 ${providerName[this.$store.state.options.translationProvider]} 的 API 密钥信息！`,
+            message: `您当前使用的翻译引擎是 ${this.providerName[this.$store.state.options.translationProvider]}，您还没有填写 ${this.providerName[this.$store.state.options.translationProvider]} 的 API 密钥信息，请在设置中填写 ${this.providerName[this.$store.state.options.translationProvider]} 的 API 密钥信息！`,
             buttons: ['知道了'],
             type: 'info',
             noLink: true
@@ -535,6 +535,10 @@ export default {
   },
   created() {
     document.title = '翻译 - OCRanslate';
+    // 移除译文语言选择中的自动检测
+    if (this.languageList2[0].code === 'auto' || this.languageList2[0].name === '自动检测语言') {
+      this.languageList2.splice(0, 1);
+    }
     // 如果是讯飞翻译就更改默认语言选项
     if (this.$store.state.options.translationProvider === 'xunfei') {
       this.languageSelected1 = 'en';
