@@ -46,7 +46,7 @@ app.on('ready', async () => {
     mainWindow.loadFile('dist/index.html');
   } else {
     // 如果没有打包就直接从本地服务器加载
-    mainWindow.loadURL('http://localhost:9999/');
+    mainWindow.loadURL('http://localhost:38527/');
   }
 
   // 全局快捷键
