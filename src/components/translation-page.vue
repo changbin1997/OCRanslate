@@ -77,7 +77,7 @@ export default {
       translationResult: null,
       favorite: false,
       favoriteId: null,
-      providerName: {baidu: '百度翻译', tencent: '腾讯翻译', xunfei: '讯飞翻译', youdao: '有道翻译'}
+      providerName: {baidu: '百度翻译', tencent: '腾讯翻译', xunfei: '讯飞翻译', youdao: '有道翻译', ali: '阿里翻译'}
     }
   },
   methods: {
@@ -482,6 +482,14 @@ export default {
           this.$store.state.options.translationProvider === 'youdao' &&
           this.$store.state.options.youdaoOcrAppID !== '' &&
           this.$store.state.options.youdaoOcrAppKey !== ''
+      ) {
+        this.available = true;
+      }
+      // 检查阿里 API 密钥
+      if (
+          this.$store.state.options.translationProvider === 'ali' &&
+          this.$store.state.options.aliyunAccessKeyID !== '' &&
+          this.$store.state.options.aliyunAccessKeySecret !== ''
       ) {
         this.available = true;
       }

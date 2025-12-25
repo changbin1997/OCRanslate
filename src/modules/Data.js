@@ -1043,8 +1043,19 @@ module.exports = class Data {
         count: await this.getTranslationwordCount(thisMonth, 'youdao')
       }
     ];
+    // 查询阿里翻译字数
+    const ali = [
+      {
+        name: '阿里翻译总字数',
+        count: await this.getTranslationwordCount(0, 'ali')
+      },
+      {
+        name: '本月阿里翻译字数',
+        count: await this.getTranslationwordCount(thisMonth, 'ali')
+      }
+    ]
 
-    return {baidu: baidu, tencent: tencent, xunfei: xunfei, youdao: youdao};
+    return {baidu: baidu, tencent: tencent, xunfei: xunfei, youdao: youdao, ali: ali};
   }
 
   /**

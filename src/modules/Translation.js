@@ -3,6 +3,7 @@ const TmtClient = require('tencentcloud-sdk-nodejs').tmt.v20180321.Client;
 const BaiduTranslation = require('./BaiduTranslation');  // 百度翻译模块
 const XunfeiTranslation = require('./XunfeiTranslation');  // 讯飞翻译模块
 const YoudaoTranslation = require('./YoudaoTranslation');  // 有道翻译模块
+const AliyunTranslation = require('./AliyunTranslation');  // 阿里翻译
 
 module.exports = class Translation {
   options = null;
@@ -33,6 +34,21 @@ module.exports = class Translation {
     }
 
     return result;
+  }
+
+  /**
+   * 阿里翻译
+   * @param {string} q 要翻译的内容
+   * @param {string} from 原文语言，默认为 auto
+   * @param {string} to 译文语言，默认为 zh 中文
+   * @returns {Promise<{result: "success", translated: string, detectedLanguage?: string, raw: Object}|{result: "error", msg: string}>}
+   */
+  async ali(q, from = 'auto', to = 'zh') {
+    const aliyunAccessKeyID = this.options.aliyunAccessKeyID;
+    const aliyunAccessKeySecret = this.options.aliyunAccessKeySecret;
+    // 调用阿里翻译
+    const aliyunTranslation = new AliyunTranslation(aliyunAccessKeyID, aliyunAccessKeySecret);
+    return await aliyunTranslation.translateGeneral(q, from, to);
   }
 
   /**

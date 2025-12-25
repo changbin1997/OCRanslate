@@ -66,7 +66,7 @@ export default {
       list: [],
       btnDisabled: false,
       voice: null,
-      providerName: {baidu: '百度翻译', tencent: '腾讯翻译', xunfei: '讯飞翻译', youdao: '有道翻译'}
+      providerName: {baidu: '百度翻译', tencent: '腾讯翻译', xunfei: '讯飞翻译', youdao: '有道翻译', ali: '阿里翻译'}
     }
   },
   computed: {

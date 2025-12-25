@@ -168,8 +168,9 @@
               <option value="tencent">腾讯翻译</option>
               <option value="xunfei">讯飞翻译</option>
               <option value="youdao">有道翻译</option>
+              <option value="ali">阿里翻译</option>
             </select>
-            <p class="mt-3" id="translation-provider-description">腾讯、讯飞、有道的 OCR 和翻译使用的是相同的密钥信息，只需要开通功能就可以使用了。</p>
+            <p class="mt-3" id="translation-provider-description">腾讯、讯飞、有道、阿里的 OCR 和翻译使用的是相同的密钥信息，只需要开通功能就可以使用了。</p>
           </div>
         </div>
         <!--OCR语音设置-->

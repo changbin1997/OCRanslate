@@ -4,16 +4,18 @@
 
 下面是 API 申请地址：
 
-* 百度 OCR API：[https://ai.baidu.com/tech/ocr_general](https://ai.baidu.com/tech/ocr_general)
-* 腾讯 OCR API：[https://cloud.tencent.com/product/ocr-catalog](https://cloud.tencent.com/product/ocr-catalog)
+* 百度 OCR API [https://ai.baidu.com/tech/ocr_general](https://ai.baidu.com/tech/ocr_general)
+* 腾讯 OCR API [https://cloud.tencent.com/product/ocr-catalog](https://cloud.tencent.com/product/ocr-catalog)
 * 科大讯飞 OCR API [https://www.xfyun.cn/services/common-ocr](https://www.xfyun.cn/services/common-ocr)
 * 有道智云 OCR API [https://ai.youdao.com/product-ocr-print.s](https://ai.youdao.com/product-ocr-print.s)
-* 百度翻译 API：[https://fanyi-api.baidu.com/](https://fanyi-api.baidu.com/)
+* 阿里云 OCR API [https://ai.aliyun.com/ocr](https://ai.aliyun.com/ocr)
+* 百度翻译 API [https://fanyi-api.baidu.com/](https://fanyi-api.baidu.com/)
 * 腾讯机器翻译 API [https://cloud.tencent.com/product/tmt](https://cloud.tencent.com/product/tmt)
-* 有道翻译 API：[https://ai.youdao.com/product-fanyi-text.s](https://ai.youdao.com/product-fanyi-text.s)
-* 讯飞翻译 API：[https://www.xfyun.cn/services/xftrans](https://www.xfyun.cn/services/xftrans)
+* 有道翻译 API [https://ai.youdao.com/product-fanyi-text.s](https://ai.youdao.com/product-fanyi-text.s)
+* 讯飞翻译 API [https://www.xfyun.cn/services/xftrans](https://www.xfyun.cn/services/xftrans)
+* 阿里翻译 API [https://www.aliyun.com/product/ai/alimt](https://www.aliyun.com/product/ai/alimt)
 
-腾讯、有道、讯飞的文字识别和翻译使用的是相同的密钥。
+腾讯、有道、讯飞、阿里的文字识别和翻译使用的是相同的密钥。
 
 下面是 API 的免费额度说明：
 
@@ -24,8 +26,9 @@
 * 百度翻译 - 通用文本翻译：每月 50000 - 1000000 字免费
 * 腾讯机器翻译 - 文本翻译：每月 5000000 字免费
 * 讯飞机器翻译 - 机器翻译：注册后免费 200万字符，有效期一年
+* 阿里机器翻译 - 通用翻译：每月 200 万字免费
 
-以上信息写于 2022 年 8 月 28 日，API 额度可能随时会更改，一切以官网为准。
+以上信息写于我开发功能的时候，API 额度可能随时会更改，一切以官网为准。
 
 ## 支持的 API
 
@@ -46,6 +49,7 @@
 * 百度翻译 - 通用文本翻译
 * 腾讯机器翻译 - 文本翻译
 * 讯飞机器翻译 - 机器翻译
+* 阿里机器翻译 - 通用翻译
 * 有道翻译 - 文字翻译
 
 ## TesseractOCR
