@@ -504,6 +504,7 @@ export default {
      */
     async openSelector() {
       const result = await window.electronAPI.ipcRenderer.invoke('selector-window');
+      if (result === null) return false;
       if (result.result !== 'success') {
         await window.electronAPI.ipcRenderer.invoke('dialog', {
           name: 'showMessageBox',

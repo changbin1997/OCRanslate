@@ -12,9 +12,19 @@
 <img src="" alt="截取范围选择" id="img" draggable="false">
 <h1>按住鼠标拖动来选择一个固定识别区域</h1>
 <!--图片选择框-->
-<div id="select-box"></div>
+<div id="select-box">
+  <div class="zoom-btn top-btn" data-direction="top"></div>
+  <div class="zoom-btn bottom-btn" data-direction="bottom"></div>
+  <div class="zoom-btn left-btn" data-direction="left"></div>
+  <div class="zoom-btn right-btn" data-direction="right"></div>
+</div>
 <!--遮罩层-->
 <div id="overlay"></div>
-<script type="text/javascript" src="app.js"></script>
+<!--按钮区域-->
+<div role="toolbar" id="toolbar">
+  <a href="javascript:;" role="button" id="clear-btn" title="取消"><span>取消</span></a>
+  <a href="javascript:;" role="button" id="finish-btn" title="完成"><span>完成</span></a>
+</div>
+<script type="module" src="./app.js"></script>
 </body>
 </html>

@@ -12,7 +12,7 @@ module.exports = () => {
     // 截图
     screenshotDesktop().then(img => {
       // 创建一个新窗口
-      const selectorWindow = new BrowserWindow({
+      let selectorWindow = new BrowserWindow({
         fullscreen: true,
         autoHideMenuBar: true,
         alwaysOnTop: true,
@@ -30,10 +30,25 @@ module.exports = () => {
         selectorWindow.webContents.send('img', img);
       });
 
+      let selected = null;  // 存储选择的位置
+
       // 新窗口框选完成后就关闭新窗口
       ipcMain.handleOnce('complete', (ev, args) => {
+        selected = args;
         selectorWindow.close();
-        resolve(args);
+      });
+
+      // 新窗口取消选择就关闭窗口
+      ipcMain.handleOnce('close-window', () => {
+        selectorWindow.close();
+      });
+
+      // 选择窗口关闭事件
+      selectorWindow.on('close', () => {
+        ipcMain.removeHandler('complete');
+        ipcMain.removeHandler('close-window');
+        selectorWindow = null;
+        resolve(selected);
       });
     }).catch(error => {
       resolve({result: 'error', msg: error.message});

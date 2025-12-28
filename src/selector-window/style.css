@@ -41,9 +41,44 @@ h1 {
 /*图片区域选择框*/
 #select-box {
   border: 1px solid #0000FF;
+  cursor: move;
   display: none;
   position: fixed;
   width: 0;
   height: 0;
   z-index: 20;
+}
+/*选择框缩放按钮*/
+.zoom-btn {
+  width: 8px;
+  height: 8px;
+  background: #0000FF;
+  position: absolute;
+  display: none;
+}
+/*上下缩放的按钮*/
+.top-btn, .bottom-btn {
+  cursor: ns-resize;
+}
+/*左右缩放的按钮*/
+.left-btn, .right-btn {
+  cursor: ew-resize;
+}
+
+/*工具栏*/
+#toolbar {
+  width: 100px;
+  height: 26px;
+  position: fixed;
+  z-index: 31;
+  display: none;
+  align-items: center;
+  justify-content: space-around;
+  background: #F2F3F5;
+  border: 1px solid #dee2e6;
+}
+#toolbar a {
+  font-size: 14px;
+  color: #212529;
+  text-decoration: none;
 }
