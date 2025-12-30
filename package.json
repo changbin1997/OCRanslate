@@ -44,9 +44,8 @@
     "rules": {}
   },
   "browserslist": [
-    "> 1%",
     "last 2 versions",
-    "not dead"
+    "> 0.5%"
   ],
   "build": {
     "appId": "OCRanslate",
@@ -84,7 +83,8 @@
       "!**/{appveyor.yml,.travis.yml,circle.yml}",
       "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
       "!**/src/components/**",
-      "!**/src/assets/**",
+      "!**/src/assets/css/**",
+      "!**/src/assets/fonts/**",
       "!**/src/main.js",
       "!**/src/App.vue",
       "!**/public/**",

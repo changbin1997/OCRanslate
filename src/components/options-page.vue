@@ -28,6 +28,7 @@
           <li><a href="javascript:;" @click="scrollToSection('#specific-area-title')">指定区域识别</a></li>
           <li><a href="javascript:;" @click="scrollToSection('#automation-title')">自动执行（用于手动选择图片和翻译）</a></li>
           <li><a href="javascript:;" @click="scrollToSection('#clipboard-translation-title')">自动翻译剪贴板的文字</a></li>
+          <li><a href="javascript:;" @click="scrollToSection('#key-sound-title')">快捷键按键音效</a></li>
         </ul>
       </div>
       <div class="options-box p-3 border-start">
@@ -361,6 +362,17 @@
           <p class="mt-3" id="clipboard-translation-key-name-description">你可以在上方的表单中按下需要使用的按键来更改快捷键设置</p>
         </div>
         <div class="mb-4"></div>
+        <p class="mb-2" id="key-sound-title"><b>快捷键按键音效</b></p>
+        <div aria-label="快捷键按键音效" role="group">
+          <div class="mb-3">
+            <div class="form-check">
+              <input aria-describedby=“key-sound-description” class="form-check-input" type="checkbox" id="key-sound" v-model="optionsSelected.keySound">
+              <label class="form-check-label" for="key-sound">启用快捷键音效</label>
+            </div>
+          </div>
+          <p class="mt-3" id="key-sound-description">指定区域识别和剪贴板翻译快捷键按下后，在收到结果前不会有任何视觉反馈，启用按键音效后，使用这两个功能会播放按键音效，可确认是否成功触发功能。</p>
+        </div>
+        <div class="mb-4"></div>
         <div>
           <button type="button" class="btn btn-primary" @click="saveOptions" :disabled="disabledSaveBtn">保存设置</button>
         </div>
@@ -437,7 +449,8 @@ export default {
         translationAutoVoice: false,
         autoTranslation: false,
         clipboardTranslation: false,
-        clipboardTranslationKeyName: 'F4'
+        clipboardTranslationKeyName: 'F4',
+        keySound: true
       },
       voiceLibraryList: [],
       hotKeyFunction: [

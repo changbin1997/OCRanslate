@@ -36,6 +36,15 @@ export default {
         return false;
       }
       this.$store.commit('changeOptions', options.options);
+    },
+    /**
+     * 播放音效
+     * @param {string} audioFilePath 音频文件路径
+     */
+    playSound(audioFilePath) {
+      const audio = new Audio(audioFilePath);
+      audio.volume = 0.7;
+      audio.play();
     }
   },
   created() {
@@ -72,6 +81,10 @@ export default {
         name: 'translationPage',
         query: {ocrTranslation: args.length}
       });
+    });
+    // 播放音效
+    window.electronAPI.onResponse('playSound', (ev, args) => {
+      this.playSound(args);
     });
   }
 }

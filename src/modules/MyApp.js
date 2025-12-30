@@ -7,6 +7,7 @@ const TesseractOcr = require('./TesseractOcr');
 const selectorWindow = require('./selector-window');
 const ScreenshotOcr = require('./screenshotOcr');
 const path = require("path");
+const fs = require("node:fs");
 let disabled = false; // 用于禁用截图识别
 let tray = null;  // 用来存储系统托盘
 
@@ -178,10 +179,18 @@ module.exports = class MyApp {
     // 如果开启了指定区域识别
     if (this.options.options.specificArea) {
       globalShortcut.register(this.options.options.specificAreaKeyName, async () => {
+        // 是否还有没有完成的识别
         if (disabled) {
           // 播放提示音
           shell.beep();
           return false;
+        }
+        // 播放按键提示音
+        if (this.options.options.keySound) {
+          mainWindow.webContents.send(
+            'playSound',
+            path.normalize(path.join(__dirname, '../assets/audios/notification.mp3'))
+          );
         }
         disabled = true; // 正在识别时禁用截图
         // 调用截取指定区域识别
@@ -213,6 +222,13 @@ module.exports = class MyApp {
     // 如果开启了剪贴板翻译
     if (this.options.options.clipboardTranslation) {
       globalShortcut.register(this.options.options.clipboardTranslationKeyName, () => {
+        // 播放按键提示音
+        if (this.options.options.keySound) {
+          mainWindow.webContents.send(
+            'playSound',
+            path.normalize(path.join(__dirname, '../assets/audios/notification.mp3'))
+          );
+        }
         // 读取剪贴板的文字
         const clipboardText = clipboard.readText();
         if (clipboardText === '') return false;

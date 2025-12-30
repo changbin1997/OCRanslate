@@ -201,6 +201,7 @@ module.exports = class Data {
         options.autoTranslation = Boolean(Number(options.autoTranslation));
         options.specificArea = Boolean(Number(options.specificArea));
         options.clipboardTranslation = Boolean(Number(options.clipboardTranslation));
+        options.keySound = Boolean(Number(options.keySound));
         // 把 Number 类型的值转为 Number
         options.ocrVoiceSpeed = Number(options.ocrVoiceSpeed);
         options.ocrVoiceVolume = Number(options.ocrVoiceVolume);
@@ -328,7 +329,8 @@ module.exports = class Data {
       translationAutoVoice: false,
       autoTranslation: false,
       clipboardTranslation: false,
-      clipboardTranslationKeyName: 'F4'
+      clipboardTranslationKeyName: 'F4',
+      keySound: true
     };
 
     // 获取选项的名称
