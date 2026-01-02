@@ -34,7 +34,7 @@
     </div>
     <div class="ocr-box">
       <!--文件选择和图片显示区域-->
-      <div class="ocr-img-box border-end" @click="showFileDialog" @dragover="preventDefault" @drop="dragFile">
+      <div class="ocr-img-box border-end" @click="showFileDialog" @dragover="preventDefault" @drop="dragFile" tabindex="0" @keydown.enter="showFileDialog" role="button" aria-label="选择图片">
         <img v-bind:src="imgOptions.url" alt="用于识别的图片" v-if="imgOptions.show">
         <div class="guide text-center" v-if="showGuide">
           <h2>点击此处选择图片识别</h2>
@@ -42,9 +42,10 @@
         </div>
       </div>
       <div class="ocr-text-box">
-        <textarea class="form-control border border-0" v-model="ocrText" aria-label="OCR识别结果" placeholder="此处会显示 OCR 识别结果" @contextmenu="contextMenu" aria-live="assertive"></textarea>
+        <textarea class="form-control border border-0" v-model="ocrText" aria-label="OCR识别结果" placeholder="此处会显示 OCR 识别结果" @contextmenu="contextMenu"></textarea>
       </div>
     </div>
+    <div id="sr-live" aria-live="assertive" aria-atomic="true" v-html="announce"></div>
   </div>
 </template>
 
@@ -84,7 +85,8 @@ export default {
         youdao: false, 
         ali: false, 
         tesseract: true
-      }
+      },
+      announce: ''
     }
   },
   methods: {
@@ -162,6 +164,8 @@ export default {
      * @returns {Promise<void|false>} 若文件非图片或识别出错则返回 false，否则返回 void
      */
     async submit(fileName) {
+      // 记住当前使用的 API 接口,下次可以自动选中
+      this.setLastOcrAPI();
       // 清除 vuex 存储的自动执行
       this.$store.commit('changeAuto', '');
       // 是否是图片
@@ -224,6 +228,7 @@ export default {
       }
       // 把识别结果数组用换行符分隔转换为字符串
       this.ocrText = result.list.join("\n");
+      this.announce = result.list.join('<br />');
       // 如果开启了自动朗读就朗读 OCR 文字
       if (this.$store.state.options.ocrAutoVoice) {
         this.startVoice();
@@ -243,6 +248,7 @@ export default {
       this.showGuide = true;
       this.voice.stop();
       this.$store.commit('changeAuto', '');
+      this.announce = '';
     },
     /**
      * 将识别结果复制到系统剪贴板
@@ -408,6 +414,7 @@ export default {
       this.imgOptions.show = true;
       // 显示文字
       this.ocrText = this.$store.state.ocrResult.list.join("\n");
+      this.announce = this.$store.state.ocrResult.list.join('<br />');
       // 清空 Vuex 中存储的 OCR 结果
       this.$store.commit('changeOcrResult', null);
       // 自动执行
@@ -429,6 +436,23 @@ export default {
         y: ev.clientY
       };
       window.electronAPI.ipcRenderer.send('contextMenu', client);
+    },
+    /**
+     * 保存上次使用的 API 接口信息
+     */
+    setLastOcrAPI() {
+      // 保存上次使用的 API 接口名称
+      const api = this.ocrType.find(item => item.name === this.ocrTypeSelectde);
+      localStorage.setItem('lastOcrAPI', JSON.stringify(api));
+    },
+    /**
+     * 获取上次使用的 API 信息
+     */
+    getLastOcrAPI() {
+      let api = localStorage.getItem('lastOcrAPI');
+      if (api === null || api === undefined) return false;
+      api = JSON.parse(api);
+      this.ocrTypeSelectde = api.name;
     }
   },
   created() {
@@ -444,6 +468,8 @@ export default {
     if (this.$route.query.ocrResult !== undefined && this.$route.query.time !== undefined) {
       this.showOcrResult();
     }
+    // 设置上次使用的 OCR API
+    this.getLastOcrAPI();
   },
   watch: {
     // 等 App 获取选项数据并传到 Vuex 才会执行
@@ -547,5 +573,14 @@ export default {
 }
 .ocr-text-box textarea:focus {
   box-shadow: none;
+}
+/*用于屏幕阅读器朗读的元素*/
+#sr-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 </style>

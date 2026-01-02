@@ -50,9 +50,10 @@
         <textarea @drop="dragFile" @dragover="preventDefault"  class="form-control border-0" placeholder="请输入要翻译的内容" aria-label="原文" v-model="originalText" @contextmenu="contextMenu"></textarea>
       </div>
       <div class="result-box">
-        <textarea class="form-control border-top-0 border-bottom-0 border-end-0" aria-label="译文" v-model="resultText" aria-live="assertive" @contextmenu="contextMenu"></textarea>
+        <textarea class="form-control border-top-0 border-bottom-0 border-end-0" aria-label="译文" v-model="resultText"  @contextmenu="contextMenu"></textarea>
       </div>
     </div>
+    <div id="sr-live" aria-live="assertive" aria-atomic="true" v-html="announce"></div>
   </div>
 </template>
 
@@ -77,7 +78,8 @@ export default {
       translationResult: null,
       favorite: false,
       favoriteId: null,
-      providerName: {baidu: '百度翻译', tencent: '腾讯翻译', xunfei: '讯飞翻译', youdao: '有道翻译', ali: '阿里翻译'}
+      providerName: {baidu: '百度翻译', tencent: '腾讯翻译', xunfei: '讯飞翻译', youdao: '有道翻译', ali: '阿里翻译'},
+      announce: ''
     }
   },
   methods: {
@@ -249,6 +251,8 @@ export default {
      * @returns {Promise<void|false>} 若出错或无翻译内容则返回 false，否则返回 void
      */
     async submit() {
+      // 记住本次使用的翻译选项
+      this.setLastTranslationOptions();
       // 重置翻译结果和翻译收藏
       this.translationResult = null;
       this.favorite = false;
@@ -327,6 +331,7 @@ export default {
         resultList.push(val.dst);
       });
       this.resultText = resultList.join("\n");
+      this.announce = resultList.join('<br />');
       this.translationResult = result.data;
       // 如果开启了翻译完成后自动朗读就朗读译文
       if (this.$store.state.auto === '识别完成后自动翻译和朗读译文' || this.$store.state.options.translationAutoVoice) {
@@ -347,6 +352,7 @@ export default {
       this.favorite = false;
       this.favoriteId = null;
       this.$store.commit('changeAuto', '');
+      this.announce = '';
     },
     /**
      * 启动文本语音朗读，支持自动选择或指定语音库
@@ -539,6 +545,30 @@ export default {
         y: ev.clientY
       };
       window.electronAPI.ipcRenderer.send('contextMenu', client);
+    },
+    /**
+     * 记住上次使用的翻译选项
+     */
+    setLastTranslationOptions() {
+     const options = {
+       languageSelected1: this.languageSelected1,
+       languageSelected2: this.languageSelected2,
+       translationProvider: this.$store.state.options.translationProvider
+     };
+     localStorage.setItem('translationOptions', JSON.stringify(options));
+    },
+    /**
+     * 获取上次使用的翻译选项
+     * @returns {boolean}
+     */
+    getLastTranslationOptions() {
+      let options = localStorage.getItem('translationOptions');
+      if (options === undefined || options === null) return false;
+      options = JSON.parse(options);
+      if (options.translationProvider === this.$store.state.options.translationProvider) {
+        this.languageSelected1 = options.languageSelected1;
+        this.languageSelected2 = options.languageSelected2;
+      }
     }
   },
   created() {
@@ -564,6 +594,8 @@ export default {
       speed: this.$store.state.options.translationVoiceSpeed
     });
 
+    // 获取上次使用的翻译设置
+    this.getLastTranslationOptions();
     // 检查 API 密钥
     this.apiInit();
     // 检查自动翻译
@@ -636,5 +668,14 @@ export default {
 }
 #translation-page .text-box textarea:focus {
   box-shadow: none;
+}
+/*用于屏幕阅读器朗读的元素*/
+#sr-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 </style>
