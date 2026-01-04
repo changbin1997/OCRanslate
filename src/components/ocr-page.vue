@@ -510,6 +510,8 @@ export default {
 /*工具栏的按钮*/
 #ocr-page .toolbar button {
   transition: 0.3s;
+  display: flex;
+  align-items: center;
 }
 #ocr-page .toolbar button:focus {
   box-shadow: none;

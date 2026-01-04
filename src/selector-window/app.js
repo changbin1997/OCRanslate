@@ -1,5 +1,6 @@
 import {
   imgEl,
+  canvasEl,
   overlayEl,
   selectBoxEl,
   finishBtnEl,
@@ -9,14 +10,17 @@ import {
 
 import Selection from './Selection.js';
 
-let mouseActive = false;
+let mouseActive = false;  // 鼠标是否按下
+// 图片区域选择
 const selection = new Selection();
+let screenshot = false;  // 是否需要截取图片
 
 // 截图完成
 window.electronAPI.onResponse('img', (ev, result) => {
   // 在 img 中显示图片
-  const blob = new Blob([result], {type: 'image/png'});
+  const blob = new Blob([result.img], {type: 'image/png'});
   imgEl.src = URL.createObjectURL(blob);
+  screenshot = result.screenshot;
 });
 
 // 图像显示区域鼠标按下
@@ -89,6 +93,24 @@ selectBoxEl.addEventListener('mousedown', ev => {
 finishBtnEl.addEventListener('click', () => {
   // 获取选择的尺寸和位置
   const selectBoxPosition = selection.getSelectBoxPosition();
+  if (screenshot) {
+    canvasEl.width = selectBoxPosition.width;
+    canvasEl.height = selectBoxPosition.height;
+    // 把图片截取到 canvas
+    const ctx = canvasEl.getContext('2d');
+    ctx.drawImage(
+      imgEl,
+      selectBoxPosition.left,
+      selectBoxPosition.top,
+      selectBoxPosition.width,
+      selectBoxPosition.height,
+      0,
+      0,
+      canvasEl.width,
+      canvasEl.height
+    );
+    selectBoxPosition.img = canvasEl.toDataURL('image/png');
+  }
   selectBoxPosition.result = 'success';
   window.electronAPI.ipcRenderer.invoke('complete', selectBoxPosition);
 });
@@ -98,7 +120,12 @@ clearBtnEl.addEventListener('click', () => {
   window.electronAPI.ipcRenderer.invoke('close-window');
 });
 
-// ESC 键关闭选择窗口
+// 键盘事件
 document.addEventListener('keydown', ev => {
+  // ESC 关闭选择窗口
   if (ev.key === 'Escape') clearBtnEl.click();
+  // 回车键确认
+  if (ev.key === 'Enter' || ev.key === ' ') {
+    if (selection.imgSelected) finishBtnEl.click();
+  }
 });

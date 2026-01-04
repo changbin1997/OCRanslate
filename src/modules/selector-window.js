@@ -5,9 +5,10 @@ const screenshotDesktop = require('screenshot-desktop');
 /**
  * 打开屏幕区域选择窗口
  * 该函数会截取当前屏幕，在全屏窗口中显示，允许用户框选区域
+ * @param {Boolean} screenshot 是否需要截图
  * @returns {Promise<Object>} 返回用户选择的区域信息 {left, top, width, height} 或错误对象 {result, msg}
  */
-module.exports = () => {
+module.exports = (screenshot = false) => {
   return new Promise( resolve => {
     // 截图
     screenshotDesktop().then(img => {
@@ -27,7 +28,10 @@ module.exports = () => {
 
       // 把图片发送到新窗口
       selectorWindow.webContents.on('did-finish-load', () => {
-        selectorWindow.webContents.send('img', img);
+        selectorWindow.webContents.send('img', {
+          img: img,
+          screenshot: screenshot
+        });
       });
 
       let selected = null;  // 存储选择的位置

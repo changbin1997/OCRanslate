@@ -54,9 +54,11 @@
 
 ## TesseractOCR
 
-Tesseract 是 Google 开源的 OCR 识别模型，支持全球 100 多种语言的识别，中文识别的准确率相比国内互联网公司提供的在线 OCR 服务来说，可能要稍差一些，英文的准确率还可以。
+Tesseract 是 Google 开源的 OCR 识别模型，支持全球 100 多种语言的识别，中文识别的准确率相比国内互联网公司提供的在线 OCR 服务来说会差一些，英文的准确率还可以。
 
 如果你主要用来识别英文翻译的话，Tesseract 正好合适，英文识别准确率还可以，本地离线识别，不限次数。
+
+软件内置了中文和英文的 Tesseract 识别模型，如果需要更多语言可以在软件的 Tesseract 语言模型管理页面下载。
 
 ## 使用说明
 
@@ -64,15 +66,15 @@ Tesseract 是 Google 开源的 OCR 识别模型，支持全球 100 多种语言�
 
 如果没有填写任何 OCR API 密钥，进入 OCR 页面就会弹出对话框提示，您可以在设置中填写百度或腾讯的 OCR 密钥，如下：
 
-![OCRanslate的设置页面](screenshot/options-page.jpg)
+![OCRanslate的设置页面](screenshot/options-page.png)
 
 填写完成后就可以使用 OCR 识别了，OCR 识别页面如下：
 
-![OCRanslate的OCR识别页面](screenshot/ocr-page.jpg)
+![OCRanslate的OCR识别页面](screenshot/ocr-page.png)
 
 右上方可以选择 API 接口，点击左侧选择图片文件，也可以直接把图片文件拖到左侧识别，识别后的文本内容会显示在右侧，如下：
 
-![OCRanslate识别结果](screenshot/ocr-result.jpg)
+![OCRanslate识别结果](screenshot/ocr-result.png)
 
 点击 **朗读** 可以朗读识别文本，语音在本地合成，无需等待，不限次数。
 
@@ -82,7 +84,7 @@ Tesseract 是 Google 开源的 OCR 识别模型，支持全球 100 多种语言�
 
 你也可以从左侧的侧边栏进入翻译页面，手动输入内容翻译，如下：
 
-![OCRanslate的翻译页面](screenshot/translation-page.jpg)
+![OCRanslate的翻译页面](screenshot/translation-page.png)
 
 翻译页面的语音也是在本地合成的。
 
@@ -102,7 +104,7 @@ Tesseract 是 Google 开源的 OCR 识别模型，支持全球 100 多种语言�
 
 ![选择屏幕区域识别](screenshot/screenshot-ocr.png)
 
-如果你设置了识别完成后翻译的话，识别完成后就会自动翻译，默认翻译为中文，你也可以不开启自动翻译，识别完成后手动点击翻译可以选择语言。
+如果你设置了识别完成后翻译的话，识别完成后就会自动翻译，翻译语言默认使用上次的翻译设置，你也可以不开启自动翻译，识别完成后手动点击翻译可以选择语言。
 
 软件最小化或在其它窗口也可以按快捷键识别翻译。
 
@@ -126,10 +128,10 @@ Tesseract 是 Google 开源的 OCR 识别模型，支持全球 100 多种语言�
 
 ![OCRanslate的OCR历史记录表格](screenshot/table-page.jpg)
 
+只有成功识别才会加入历史记录，失败或出错不会加入记录。
+
 ## 注意事项
 
 语音合成功能需要你的电脑上安装了语音库才能使用，一般的 Windows 10 以上的系统都会有语音库，只有一些修改过的精简版或 GHOST 的系统才会删除语音库。
-
-软件虽然是用 Electron 开发的，但在 Linux 和 Mac 并不能使用完整功能，软件的选择屏幕区域识别功能用到了微信截图的 dll，在 Linux 和 Mac 可能无法使用。
 
 软件没有服务器，不会联网，只有 OCR 识别和翻译的时候会连接到 API 服务器。软件的数据保存使用的是 SQLite 数据库，第一次进入软件后会在软件目录生成一个 `data.db` 的数据文件，软件设置和历史记录就保存在 `data.db` 中。

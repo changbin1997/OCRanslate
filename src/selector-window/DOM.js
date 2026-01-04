@@ -9,3 +9,4 @@ export const bottomBtn = document.querySelector('.bottom-btn');
 export const rightBtn = document.querySelector('.right-btn');
 export const finishBtnEl = document.querySelector('#finish-btn');  // 完成选择的按钮
 export const clearBtnEl = document.querySelector('#clear-btn');  // 取消截图
+export const canvasEl = document.querySelector('#canvas');  // 用于截图的 canvas

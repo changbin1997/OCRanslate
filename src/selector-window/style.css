@@ -17,16 +17,6 @@ html, body {
   user-select: none;
 }
 
-/*提示文字*/
-h1 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #FF0000;
-  z-index: 2;
-}
-
 /**图片上方的遮罩层*/
 #overlay {
   width: 100%;

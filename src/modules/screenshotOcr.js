@@ -1,10 +1,7 @@
-const path = require('path');
-const fs = require('fs');
-const child_process = require('child_process');
-const {clipboard} = require('electron');
 const Ocr = require('./Ocr');
 const screenshotDesktop = require('screenshot-desktop');
 const jimp = require('jimp');
+const selectorWindow = require('./selector-window');
 
 module.exports = class ScreenshotOcr {
   options = null; // 选项
@@ -134,9 +131,9 @@ module.exports = class ScreenshotOcr {
         msg: `缺少 ${this.providerList[provider]} API 密钥！`
       };
     }
-    // 调用截图
+    // 截图
     const img = await this.screenshot();
-    // 取消截图
+    // 是否取消截图
     if (img === null) return null;
     // 截图出错
     if (img.result !== undefined && img.result === 'error') return img;
@@ -156,52 +153,16 @@ module.exports = class ScreenshotOcr {
   }
 
   /**
-   * 打开截图工具进行截图
-   * @returns {Promise<string|null|Object>} 返回 Base64 格式的图片数据、null（用户取消）或错误对象
+   * 使用 electron 截图和裁剪图片
+   * @returns {Promise<*|boolean>} 返回图片 base64
    */
-  screenshot() {
-    return new Promise((resolve) => {
-      // 截图 dll 位置
-      const screenshotModule = {
-        dll: path.join(process.cwd(), 'dll', 'PrScrn.dll'),
-        exe: path.join(process.cwd(), 'dll', 'PrintScr.exe')
-      };
-      // 检测截图 exe 是否存在
-      fs.exists(screenshotModule.exe, (exists) => {
-        // 如果截图 exe 不存在就直接返回
-        if (!exists) {
-          resolve({
-            result: 'error',
-            msg: `找不到 ${screenshotModule.exe} 文件`
-          });
-          return false;
-        }
-        // 检测截图 dll 是否存在
-        fs.exists(screenshotModule.dll, (dllExists) => {
-          if (!dllExists) {
-            resolve({
-              result: 'error',
-              msg: `找不到 ${screenshotModule.dll} 文件`
-            });
-            return false;
-          }
-          // 打开截图程序
-          const screenWindow = child_process.execFile(screenshotModule.exe);
-          // 截图程序被关闭
-          screenWindow.on('exit', (code) => {
-            // 是否成功截图
-            if (code) {
-              // 从剪贴板读取图片
-              let img = clipboard.readImage();
-              // 把图片转为 base64
-              img = img.toPNG().toString('base64');
-              resolve(img);
-            } else {
-              resolve(null);
-            }
-          });
-        });
-      });
-    });
+  async screenshot() {
+    // 显示图片区域选择窗口
+    const result = await selectorWindow(true);
+    // 是否选择了取消
+    if (result === null) return null;
+    // 是否出错
+    if (result.result !== 'success') return result;
+    return result.img.replace('data:image/png;base64,', '');
   }
 };
