@@ -330,7 +330,9 @@ module.exports = class Data {
       autoTranslation: false,
       clipboardTranslation: false,
       clipboardTranslationKeyName: 'F4',
-      keySound: true
+      keySound: true,
+      autoTranslationLanguageSelected1: 'auto',
+      autoTranslationLanguageSelected2: 'zh'
     };
 
     // 获取选项的名称

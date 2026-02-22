@@ -61,9 +61,14 @@ const store = new Vuex.Store({
     options: null,
     ocrResult: null,
     translation: null,
-    auto: ''
+    auto: '',
+    translationResult: null
   },
   mutations: {
+    // 更改翻译结果
+    changeTranslationResult(state, result) {
+      state.translationResult = result
+    },
     // 更改选项
     changeOptions(state, optionsObj) {
       state.options = optionsObj;

@@ -66,22 +66,23 @@ export default {
         });
       }
     });
+
     // 跳转到指定页面
     window.electronAPI.onResponse('toPage', (ev, args) => {
       this.$router.push({name: args});
     });
-    // 剪贴板翻译
-    window.electronAPI.onResponse('clipboardTranslation', (ev, args) => {
-      // 设置翻译内容
-      this.$store.commit('changeTranslation', args);
-      // 设置翻译的自动执行
-      this.$store.commit('changeAuto', '识别完成后自动翻译和朗读译文');
+
+    // 接收截图自动翻译和剪贴板翻译的结果
+    window.electronAPI.onResponse('translationResult', (ev, args) => {
+      // 把翻译结果传给 vuex，方便翻译页面获取显示
+      this.$store.commit('changeTranslationResult', args.data);
       // 转到翻译页
       this.$router.push({
         name: 'translationPage',
-        query: {ocrTranslation: args.length}
+        query: {type: '显示翻译结果', timestamp: String(new Date().getTime())}
       });
     });
+
     // 播放音效
     window.electronAPI.onResponse('playSound', (ev, args) => {
       this.playSound(args);

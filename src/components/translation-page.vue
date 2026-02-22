@@ -341,6 +341,40 @@ export default {
       this.$store.commit('changeAuto', '');
     },
     /**
+     * 显示 OCR 截图翻译和剪贴板翻译的结果
+     */
+    showAutoTranslationResult() {
+      // 重置翻译结果和翻译收藏
+      this.translationResult = null;
+      this.favorite = false;
+      this.favoriteId = null;
+
+      const resultList = [];  // 用于存储处理后的译文
+      const originalList = [];  // 用于存储处理后的原文
+      // 从 vuex 获取翻译结果
+      const result = this.$store.state.translationResult;
+
+      // 显示翻译结果的原文语言和译文语言
+      this.languageSelected1 = result.from;
+      this.languageSelected2 = result.to;
+
+      // 显示翻译结果译文和原文
+      result.trans_result.forEach(val => {
+        // 获取译文
+        resultList.push(val.dst);
+        // 获取原文
+        originalList.push(val.src);
+      });
+      // 使用换行符把译文数组拆分为 string 传给 resultText 显示
+      this.resultText = resultList.join('\n');
+      // 使用换行符把原文数组拆分为 string 传给 originalText 显示
+      this.originalText = originalList.join('\n');
+      // 把翻译结果传一份到 data，方便用于收藏
+      this.translationResult = result;
+      // 朗读译文
+      this.startVoice(this.resultText, 'result');
+    },
+    /**
      * 清空翻译内容、结果、收藏状态和自动执行状态
      * @returns {void}
      */
@@ -598,16 +632,28 @@ export default {
     this.getLastTranslationOptions();
     // 检查 API 密钥
     this.apiInit();
-    // 检查自动翻译
-    this.autoTranslation();
+    // 如果路由中包含 OCR 翻译
+    if (this.$route.query.type === 'OCR翻译') {
+      this.autoTranslation();
+    }
+    // 如果路由中包含显示翻译结果
+    if (this.$route.query.type === '显示翻译结果') {
+      this.showAutoTranslationResult();
+    }
   },
   watch: {
     // 监听路由参数变化
     $route(to, from) {
       if (to.path === from.path && to.name === from.name) {
         if (to.query !== from.query) {
-          // 检查自动翻译
-          this.autoTranslation();
+          // 检查路由是否有 OCR翻译
+          if (to.query.type === 'OCR翻译') {
+            this.autoTranslation();
+          }
+          // 检查路由是否有显示翻译结果
+          if (to.query.type === '显示翻译结果') {
+            this.showAutoTranslationResult();
+          }
         }
       }
     }

@@ -270,7 +270,7 @@ export default {
       // 转到翻译页
       this.$router.push({
         name: 'translationPage',
-        query: {ocrTranslation: this.ocrText.length}
+        query: {ocrTranslation: this.ocrText.length, type: 'OCR翻译'}
       });
     },
     /**

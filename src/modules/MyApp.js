@@ -122,6 +122,7 @@ module.exports = class MyApp {
           return false;
         }
         disabled = true; // 正在识别时禁用截图
+        // 调用截图OCR
         const result = await screenshotOcr.ocr(
           this.options.options.key1Provider,
           this.options.options.key1Function
@@ -129,6 +130,7 @@ module.exports = class MyApp {
         disabled = false; // 识别完成后恢复截图
         // 取消截图
         if (result === null) return false;
+        // 截图或识别出错
         if (result.result !== 'success') {
           await dialog.showMessageBox(mainWindow, {
             title:'OCR 识别出错',
@@ -140,7 +142,33 @@ module.exports = class MyApp {
           return false;
         }
         result.auto = this.options.options.key1Auto;
-        mainWindow.webContents.send('ocrResult', result);
+        // 是否开启了自动翻译
+        if (this.options.options.key1Auto === '识别完成后自动翻译和朗读译文') {
+          // 把识别结果数组用换行符拆分为 string 作为翻译的原文
+          const q = result.list.join('\n');
+          // 翻译
+          const translation = new Translation(this.options.options);
+          const translationResult = await translation.translation(
+            q,
+            this.options.options.autoTranslationLanguageSelected1,
+            this.options.options.autoTranslationLanguageSelected2
+          );
+          // 翻译出错
+          if (translationResult.result !== 'success') {
+            await dialog.showMessageBox(mainWindow, {
+              title:'翻译出错',
+              message: translationResult.msg,
+              type: 'error',
+              buttons: ['关闭'],
+              noLink: true
+            });
+            return false;
+          }
+          // 把翻译结果传到前端
+          mainWindow.webContents.send('translationResult', translationResult);
+        }else {
+          mainWindow.webContents.send('ocrResult', result);
+        }
       });
     }
 
@@ -172,7 +200,33 @@ module.exports = class MyApp {
           return false;
         }
         result.auto = this.options.options.key2Auto;
-        mainWindow.webContents.send('ocrResult', result);
+        // 是否开启了自动翻译
+        if (this.options.options.key2Auto === '识别完成后自动翻译和朗读译文') {
+          // 把识别结果数组用换行符拆分为 string 作为翻译的原文
+          const q = result.list.join('\n');
+          // 翻译
+          const translation = new Translation(this.options.options);
+          const translationResult = await translation.translation(
+            q,
+            this.options.options.autoTranslationLanguageSelected1,
+            this.options.options.autoTranslationLanguageSelected2
+          );
+          // 翻译出错
+          if (translationResult.result !== 'success') {
+            await dialog.showMessageBox(mainWindow, {
+              title:'翻译出错',
+              message: translationResult.msg,
+              type: 'error',
+              buttons: ['关闭'],
+              noLink: true
+            });
+            return false;
+          }
+          // 把翻译结果传到前端
+          mainWindow.webContents.send('translationResult', translationResult);
+        }else {
+          mainWindow.webContents.send('ocrResult', result);
+        }
       });
     }
 
@@ -215,13 +269,39 @@ module.exports = class MyApp {
           return false;
         }
         result.auto = this.options.options.specificAreaAuto;
-        mainWindow.webContents.send('ocrResult', result);
+        // 是否开启了自动翻译
+        if (this.options.options.specificAreaAuto === '识别完成后自动翻译和朗读译文') {
+          // 把识别结果数组用换行符拆分为 string 作为翻译的原文
+          const q = result.list.join('\n');
+          // 翻译
+          const translation = new Translation(this.options.options);
+          const translationResult = await translation.translation(
+            q,
+            this.options.options.autoTranslationLanguageSelected1,
+            this.options.options.autoTranslationLanguageSelected2
+          );
+          // 翻译出错
+          if (translationResult.result !== 'success') {
+            await dialog.showMessageBox(mainWindow, {
+              title:'翻译出错',
+              message: translationResult.msg,
+              type: 'error',
+              buttons: ['关闭'],
+              noLink: true
+            });
+            return false;
+          }
+          // 把翻译结果传到前端
+          mainWindow.webContents.send('translationResult', translationResult);
+        }else {
+          mainWindow.webContents.send('ocrResult', result);
+        }
       });
     }
 
     // 如果开启了剪贴板翻译
     if (this.options.options.clipboardTranslation) {
-      globalShortcut.register(this.options.options.clipboardTranslationKeyName, () => {
+      globalShortcut.register(this.options.options.clipboardTranslationKeyName, async () => {
         // 播放按键提示音
         if (this.options.options.keySound) {
           mainWindow.webContents.send(
@@ -232,8 +312,26 @@ module.exports = class MyApp {
         // 读取剪贴板的文字
         const clipboardText = clipboard.readText();
         if (clipboardText === '') return false;
-        // 把剪贴板的内容传给渲染进程的 app 组件
-        mainWindow.webContents.send('clipboardTranslation', clipboardText);
+        // 翻译
+        const translation = new Translation(this.options.options);
+        const translationResult = await translation.translation(
+          clipboardText,
+          this.options.options.autoTranslationLanguageSelected1,
+          this.options.options.autoTranslationLanguageSelected2
+        );
+        // 翻译出错
+        if (translationResult.result !== 'success') {
+          await dialog.showMessageBox(mainWindow, {
+            title:'翻译出错',
+            message: translationResult.msg,
+            type: 'error',
+            buttons: ['关闭'],
+            noLink: true
+          });
+          return false;
+        }
+        // 把翻译结果传到前端
+        mainWindow.webContents.send('translationResult', translationResult);
       });
     }
   }
