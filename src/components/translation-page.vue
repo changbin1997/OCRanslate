@@ -19,13 +19,13 @@
       <!--翻译语言选择区域-->
       <div class="language-box">
         <select class="form-select form-select-sm" v-model="languageSelected1" aria-label="原文语言" title="原文语言">
-          <option v-for="(item, index) of languageList1" :key="index" v-bind:value="item.code">{{item.name}}</option>
+          <option v-for="item of languageList1" :key="item.code" v-bind:value="item.code">{{item.name}}</option>
         </select>
         <button type="button" class="btn btn-sm" aria-label="翻译" title="翻译" @click="submit" :disabled="disabledSubmitBtn">
           <i class="icon-arrow-right2"></i>
         </button>
         <select class="form-select form-select-sm" v-model="languageSelected2" aria-label="译文语言" title="译文语言">
-          <option v-for="(item, index) of languageList2" :key="index" v-bind:value="item.code">{{item.name}}</option>
+          <option v-for="item of languageList2" :key="item.code" v-bind:value="item.code">{{item.name}}</option>
         </select>
       </div>
       <!--译文操作区域-->

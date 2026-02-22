@@ -10,7 +10,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="(item, index) of translationList" :key="index">
+      <tr v-for="item of translationList" :key="item.provider + item.translation_time">
         <td>{{providerName[item.provider]}}</td>
         <td>{{item.word_count}}</td>
         <td>{{item.translation_time}}</td>

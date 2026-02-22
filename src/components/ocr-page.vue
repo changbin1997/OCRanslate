@@ -27,7 +27,7 @@
         <label for="ocr-type-select" class="form-label me-2 mb-0">识别接口</label>
         <div>
           <select v-model="ocrTypeSelectde" class="form-select-sm form-select" id="ocr-type-select" aria-label="识别接口">
-            <option v-for="(item, index) of ocrType" :key="index" v-bind:value="item.name">{{item.name}}</option>
+            <option v-for="item of ocrType" :key="item.name" v-bind:value="item.name">{{item.name}}</option>
           </select>
         </div>
       </div>

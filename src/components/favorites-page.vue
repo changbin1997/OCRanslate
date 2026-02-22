@@ -15,7 +15,7 @@
         </div>
         <div class="row">
           <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-            <p class="mb-1" v-for="(src, srcIndex) of item.src" :key="srcIndex">{{src}}</p>
+            <p class="mb-1" v-for="src of item.src" :key="src">{{src}}</p>
             <div class="mb-2">
               <button type="button" class="btn btn-light btn-sm me-2" @click="copyText('src', index)">
                 <i class="icon-copy me-2"></i>
@@ -28,7 +28,7 @@
             </div>
           </div>
           <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-            <p class="mb-1" v-for="(dst, dstIndex) of item.dst" :key="dstIndex">{{dst}}</p>
+            <p class="mb-1" v-for="dst of item.dst" :key="dst">{{dst}}</p>
             <div class="mb-3">
               <button type="button" class="btn btn-light btn-sm me-2" @click="copyText('dst', index)">
                 <i class="icon-copy me-2"></i>

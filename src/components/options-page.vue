@@ -51,7 +51,7 @@
           <div class="mb-3">
             <label for="baidu-ocr-language-selected" class="form-label">百度 OCR 默认识别的语言</label>
             <select id="baidu-ocr-language-selected" class="form-select" v-model="optionsSelected.baiduOcrLanguageSelected">
-              <option v-for="(item, index) of baiduOcrLanguageList" :key="index" v-bind:value="item.code">{{item.name}}</option>
+              <option v-for="item of baiduOcrLanguageList" :key="item.code" v-bind:value="item.code">{{item.name}}</option>
             </select>
           </div>
         </div>
@@ -74,14 +74,14 @@
           <div class="mb-3">
             <label for="tencent-ocr-language-selected" class="form-label">腾讯 OCR 默认识别的语言</label>
             <select aria-describedby="tencent-ocr-language-description" id="tencent-ocr-language-selected" class="form-select" v-model="optionsSelected.tencentOcrLanguageSelected">
-              <option v-for="(item, index) of tencentOcrLanguageList" :key="index" v-bind:value="item.code">{{item.name}}</option>
+              <option v-for="item of tencentOcrLanguageList" :key="item.code" v-bind:value="item.code">{{item.name}}</option>
             </select>
             <p class="mt-3" id="tencent-ocr-language-description">注意，只有普通的腾讯云通用印刷体识别支持手动设置语言，其它的腾讯识别接口设置语言无效！</p>
           </div>
           <div class="mb-3">
             <label for="tencent-ocr-region-selected" class="form-label">腾讯 OCR 服务器地域</label>
             <select id="tencent-ocr-region-selected" class="form-select" v-model="optionsSelected.tencentOcrRegionSelected">
-              <option v-for="(item, index) of tencentOcrRegionList" :key="index" v-bind:value="item.code">{{item.name}}</option>
+              <option v-for="item of tencentOcrRegionList" :key="item.code" v-bind:value="item.code">{{item.name}}</option>
             </select>
           </div>
         </div>
@@ -117,7 +117,7 @@
           <div class="mb-3">
             <label for="youdao-ocr-language-selected" class="form-label">有道 OCR 默认识别的语言</label>
             <select id="youdao-ocr-language-selected" class="form-select" v-model="optionsSelected.youdaoOcrLanguageSelected">
-              <option v-for="(item, index) of youdaoOcrLanguageList" :key="index" v-bind:value="item.code">{{item.name}}</option>
+              <option v-for="item of youdaoOcrLanguageList" :key="item.code" v-bind:value="item.code">{{item.name}}</option>
             </select>
           </div>
         </div>
@@ -141,7 +141,7 @@
           <div class="mb-3">
             <label for="tesseract-ocr-language-selected" class="form-label">TesseractOCR 默认识别的语言</label>
             <select aria-describedby="tesseract-ocr-language-description" id="tesseract-ocr-language-selected" class="form-select" v-model="optionsSelected.tesseractOcrLanguageSelected">
-              <option v-for="(item, index) of tesseractOcrLanguageList" :key="index" v-bind:value="item.code">{{item.name}}</option>
+              <option v-for="item of tesseractOcrLanguageList" :key="item.code" v-bind:value="item.code">{{item.name}}</option>
             </select>
             <p id="tesseract-ocr-language-description" class="mt-3">默认只包含中文和英文的识别模型，其它语言需要下载识别模型，在 <router-link :to="{name: 'tessdataPage'}">Tessdata语言模型文件管理</router-link> 可以查看已下载的语言模型和下载方式。</p>
           </div>
@@ -189,7 +189,7 @@
           <div class="mb-3">
             <label for="ocr-voice-library" class="form-label">发音人</label>
             <select id="ocr-voice-library" class="form-select" v-model="optionsSelected.ocrVoiceLibrarySelected">
-              <option v-for="(item, index) of voiceLibraryList" :key="index" v-bind:value="item.name">{{item.name}} {{item.lang}}</option>
+              <option v-for="item of voiceLibraryList" :key="item.name" v-bind:value="item.name">{{item.name}} {{item.lang}}</option>
             </select>
           </div>
           <div class="mb-3">
@@ -212,7 +212,7 @@
             <label for="translation-voice-library" class="form-label">发音人</label>
             <select aria-describedby="translation-voice-library-description" id="translation-voice-library" class="form-select" v-model="optionsSelected.translationVoiceLibrarySelected">
               <option value="auto">根据语言自动选择</option>
-              <option v-for="(item, index) of voiceLibraryList" :key="index" v-bind:value="item.name">{{item.name}} {{item.lang}}</option>
+              <option v-for="item of voiceLibraryList" :key="item.name" v-bind:value="item.name">{{item.name}} {{item.lang}}</option>
             </select>
           </div>
           <p class="mt-3" id="translation-voice-library-description">如果您对发音人没有特别需求的话，可以使用根据语言自动选择发音人。</p>
@@ -236,7 +236,7 @@
           <div class="mb-3">
             <label for="key-f1-function" class="form-label">快捷键1使用的接口</label>
             <select id="key-f1-function" class="form-select" v-model="optionsSelected.key1Function" :disabled="!optionsSelected.key1Enable">
-              <option v-for="(item, index) of hotKeyFunction" :key="index" v-bind:value="item.name">{{item.name}}</option>
+              <option v-for="item of hotKeyFunction" :key="item.name" v-bind:value="item.name">{{item.name}}</option>
             </select>
           </div>
           <div class="mb-3">
@@ -262,7 +262,7 @@
           <div class="mb-3">
             <label for="key-f2-function" class="form-label">快捷键2使用的接口</label>
             <select id="key-f2-function" class="form-select" v-model="optionsSelected.key2Function" :disabled="!optionsSelected.key2Enable">
-              <option v-for="(item, index) of hotKeyFunction" :key="index" v-bind:value="item.name">{{item.name}}</option>
+              <option v-for="item of hotKeyFunction" :key="item.name" v-bind:value="item.name">{{item.name}}</option>
             </select>
           </div>
           <div class="mb-3">
@@ -312,7 +312,7 @@
           <div class="mb-3">
             <label for="specific-area-api" class="form-label">指定区域识别使用的接口</label>
             <select id="specific-area-api" class="form-select" v-model="optionsSelected.specificAreaApi" :disabled="!optionsSelected.specificArea">
-              <option v-for="(item, index) of hotKeyFunction" :key="index" v-bind:value="item.name">{{item.name}}</option>
+              <option v-for="item of hotKeyFunction" :key="item.name" v-bind:value="item.name">{{item.name}}</option>
             </select>
           </div>
           <div class="mb-3">
@@ -369,14 +369,14 @@
           <div class="mb-3">
             <label for="auto-translation-language-selected1" class="form-label">原文默认语言</label>
             <select aria-describedby="auto-translation-language-selected1-description" id="auto-translation-language-selected1" class="form-select" v-model="optionsSelected.autoTranslationLanguageSelected1">
-              <option v-for="(item, index) of translationLanguageList1" :key="index" v-bind:value="item.code">{{item.name}}</option>
+              <option v-for="item of translationLanguageList1" :key="item.code" v-bind:value="item.code">{{item.name}}</option>
             </select>
           </div>
           <p class="mt-3" id="auto-translation-language-selected1-description">快捷键 OCR 识别自动翻译和剪贴板翻译的原文语言，不同的翻译引擎支持的语言数量也会不一样。</p>
           <div class="mb-3">
             <label for="auto-translation-language-selected2" class="form-label">译文默认语言</label>
             <select aria-describedby="auto-translation-language-selected2-description" id="auto-translation-language-selected2" class="form-select" v-model="optionsSelected.autoTranslationLanguageSelected2">
-              <option v-for="(item, index) of translationLanguageList2" :key="index" v-bind:value="item.code">{{item.name}}</option>
+              <option v-for="item of translationLanguageList2" :key="item.code" v-bind:value="item.code">{{item.name}}</option>
             </select>
           </div>
           <p class="mt-3" id="auto-translation-language-selected2-description">快捷键 OCR 识别自动翻译和剪贴板翻译的译文语言，不同的翻译引擎支持的语言数量也会不一样。</p>
@@ -725,7 +725,6 @@ export default {
     this.optionsSelected = this.$store.state.options;
     // 加载语音库
     this.loadVoiceLibraryList();
-    console.log(this.optionsSelected);
     // 根据翻译引擎设置支持的语言列表
     this.changeTranslationLanguageList(false);
   }

@@ -10,7 +10,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) of ocrList" :key="index">
+        <tr v-for="item of ocrList" :key="item.provider + item.ocr_time">
           <td>{{item.name}}</td>
           <td>{{provider[item.provider]}}</td>
           <td>{{item.ocr_time}}</td>

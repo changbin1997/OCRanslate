@@ -3,7 +3,7 @@
     <!--百度OCR 记录-->
     <h2 class="mb-3">百度 OCR 记录</h2>
     <div class="row">
-      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="(item, index) of baidu" :key="index">
+      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="item of baidu" :key="item.name">
         <div class="data-box">
           <h3 class="text-center">{{item.count}}</h3>
           <p class="text-center mb-2">{{item.name}}</p>
@@ -20,7 +20,7 @@
     <!--腾讯OCR记录-->
     <h2 class="mb-3">腾讯 OCR 记录</h2>
     <div class="row">
-      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="(item, index) of tencent" :key="index">
+      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="item of tencent" :key="item.name">
         <div class="data-box">
           <h3 class="text-center">{{item.count}}</h3>
           <p class="text-center mb-2">{{item.name}}</p>
@@ -37,7 +37,7 @@
     <!--讯飞OCR记录-->
     <h2 class="mb-3">科大讯飞 OCR 记录</h2>
     <div class="row">
-      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="(item, index) of xunfei" :key="index">
+      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="item of xunfei" :key="item.name">
         <div class="data-box">
           <h3 class="text-center">{{item.count}}</h3>
           <p class="text-center mb-2">{{item.name}}</p>
@@ -54,7 +54,7 @@
     <!--有道OCR记录-->
     <h2 class="mb-3">有道智云 OCR 记录</h2>
     <div class="row">
-      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="(item, index) of youdao" :key="index">
+      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="item of youdao" :key="item.name">
         <div class="data-box">
           <h3 class="text-center">{{item.count}}</h3>
           <p class="text-center mb-2">{{item.name}}</p>
@@ -71,7 +71,7 @@
     <!--阿里云 OCR 记录-->
     <h2 class="mb-3">阿里云 OCR 记录</h2>
     <div class="row">
-      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="(item, index) of ali" :key="index">
+      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="item of ali" :key="item.name">
         <div class="data-box">
           <h3 class="text-center">{{item.count}}</h3>
           <p class="text-center mb-2">{{item.name}}</p>
@@ -88,7 +88,7 @@
     <!--百度翻译记录-->
     <h2 class="mb-3">百度翻译记录</h2>
     <div class="row">
-      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="(item, index) of baiduTranslation" :key="index">
+      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="item of baiduTranslation" :key="item.name">
         <div class="data-box">
           <h3 class="text-center">{{item.count}}</h3>
           <p class="text-center mb-2">{{item.name}}</p>
@@ -105,7 +105,7 @@
     <!--腾讯翻译记录-->
     <h2 class="mb-3">腾讯翻译记录</h2>
     <div class="row">
-      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="(item, index) of tencentTranslation" :key="index">
+      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="item of tencentTranslation" :key="item.name">
         <div class="data-box">
           <h3 class="text-center">{{item.count}}</h3>
           <p class="text-center mb-2">{{item.name}}</p>
@@ -122,7 +122,7 @@
     <!--阿里翻译记录-->
     <h2 class="mb-3">阿里翻译记录</h2>
     <div class="row">
-      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="(item, index) of aliTranslation" :key="index">
+      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="item of aliTranslation" :key="item.name">
         <div class="data-box">
           <h3 class="text-center">{{item.count}}</h3>
           <p class="text-center mb-2">{{item.name}}</p>
@@ -139,7 +139,7 @@
     <!--讯飞翻译记录-->
     <h2 class="mb-3">讯飞翻译记录</h2>
     <div class="row">
-      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="(item, index) of xunfeiTranslation" :key="index">
+      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="item of xunfeiTranslation" :key="item.name">
         <div class="data-box">
           <h3 class="text-center">{{item.count}}</h3>
           <p class="text-center mb-2">{{item.name}}</p>
@@ -156,7 +156,7 @@
     <!--有道翻译记录-->
     <h2 class="mb-3">有道翻译记录</h2>
     <div class="row">
-      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="(item, index) of youdaoTranslation" :key="index">
+      <div class="col-lg-3 col-xl-2 col-md-4 mb-3" v-for="item of youdaoTranslation" :key="item.name">
         <div class="data-box">
           <h3 class="text-center">{{item.count}}</h3>
           <p class="text-center mb-2">{{item.name}}</p>

@@ -21,7 +21,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) of fileList" :key="index">
+          <tr v-for="item of fileList" :key="item.file">
             <td>{{item.name}}</td>
             <td>{{item.file}}</td>
             <td>{{item.exists}}</td>
