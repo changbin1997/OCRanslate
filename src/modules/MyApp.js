@@ -7,7 +7,6 @@ const TesseractOcr = require('./TesseractOcr');
 const selectorWindow = require('./selector-window');
 const ScreenshotOcr = require('./screenshotOcr');
 const path = require("path");
-const fs = require("node:fs");
 let disabled = false; // 用于禁用截图识别
 let tray = null;  // 用来存储系统托盘
 
@@ -149,9 +148,10 @@ module.exports = class MyApp {
           // 翻译
           const translation = new Translation(this.options.options);
           const translationResult = await translation.translation(
+            this.options.options.shortcutTranslationProvider,
             q,
-            this.options.options.autoTranslationLanguageSelected1,
-            this.options.options.autoTranslationLanguageSelected2
+            this.options.options.shortcutTranslationLanguageSelected1,
+            this.options.options.shortcutTranslationLanguageSelected2
           );
           // 翻译出错
           if (translationResult.result !== 'success') {
@@ -207,9 +207,10 @@ module.exports = class MyApp {
           // 翻译
           const translation = new Translation(this.options.options);
           const translationResult = await translation.translation(
+            this.options.options.shortcutTranslationProvider,
             q,
-            this.options.options.autoTranslationLanguageSelected1,
-            this.options.options.autoTranslationLanguageSelected2
+            this.options.options.shortcutTranslationLanguageSelected1,
+            this.options.options.shortcutTranslationLanguageSelected2
           );
           // 翻译出错
           if (translationResult.result !== 'success') {
@@ -276,9 +277,10 @@ module.exports = class MyApp {
           // 翻译
           const translation = new Translation(this.options.options);
           const translationResult = await translation.translation(
+            this.options.options.shortcutTranslationProvider,
             q,
-            this.options.options.autoTranslationLanguageSelected1,
-            this.options.options.autoTranslationLanguageSelected2
+            this.options.options.shortcutTranslationLanguageSelected1,
+            this.options.options.shortcutTranslationLanguageSelected2
           );
           // 翻译出错
           if (translationResult.result !== 'success') {
@@ -315,9 +317,10 @@ module.exports = class MyApp {
         // 翻译
         const translation = new Translation(this.options.options);
         const translationResult = await translation.translation(
+          this.options.options.shortcutTranslationProvider,
           clipboardText,
-          this.options.options.autoTranslationLanguageSelected1,
-          this.options.options.autoTranslationLanguageSelected2
+          this.options.options.shortcutTranslationLanguageSelected1,
+          this.options.options.shortcutTranslationLanguageSelected2
         );
         // 翻译出错
         if (translationResult.result !== 'success') {
@@ -342,6 +345,11 @@ module.exports = class MyApp {
    * @returns {void}
    */
   ipc() {
+    // 显示翻译 API 选择菜单
+    ipcMain.handle('showTranslationApiMenu', async (ev, args) => {
+      return await ContextMenu.translationApiMenu(args.x, args.y, args.defaultLabel);
+    });
+
     // 打开屏幕区域选择窗口
     ipcMain.handle('selector-window',  async () => {
       return await selectorWindow();
@@ -390,7 +398,7 @@ module.exports = class MyApp {
     // 翻译
     ipcMain.handle('translation', async (ev, args) => {
       const translation = new Translation(args.options);
-      return await translation.translation(args.q, args.from, args.to);
+      return await translation.translation(args.provider, args.q, args.from, args.to);
     });
 
     // 获取选项

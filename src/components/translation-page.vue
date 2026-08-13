@@ -7,13 +7,13 @@
           <i class="icon-cross me-1"></i>
           <span>清空</span>
         </button>
-        <button type="button" title="朗读原文" class="btn" :disabled="originalText.length < 1 || disabledVoiceBtn" @click="startVoice(originalText, 'original')">
-          <i class="icon-volume-medium me-1"></i>
-          <span>朗读</span>
-        </button>
         <button type="button" :class="{'text-primary': favorite}"  title="把本次翻译添加到收藏" class="btn" :disabled="translationResult === null || disabledVoiceBtn" @click="addToFavorites">
           <i class="icon-star-full me-1"></i>
           <span>收藏</span>
+        </button>
+        <button type="button" title="API选择" class="btn" @click="showTranslationApiMenu" id="show-translation-api-menu-btn">
+          <i class="icon-app me-1"></i>
+          <span>接口</span>
         </button>
       </div>
       <!--翻译语言选择区域-->
@@ -67,22 +67,43 @@ export default {
     return {
       languageSelected1: 'auto',
       languageSelected2: 'zh',
-      languageList1: languageList[this.$store.state.options.translationProvider],
-      languageList2: [...languageList[this.$store.state.options.translationProvider]],
+      languageList1: [],
+      languageList2: [],
       resultText: '',
       originalText: '',
       disabledSubmitBtn: false,
       voice: null,
       disabledVoiceBtn: false,
-      available: false,
+      available: {baidu: false, tencent: false, xunfei: false, ali: false, youdao: false},
       translationResult: null,
       favorite: false,
       favoriteId: null,
       providerName: {baidu: '百度翻译', tencent: '腾讯翻译', xunfei: '讯飞翻译', youdao: '有道翻译', ali: '阿里翻译'},
-      announce: ''
+      announce: '',
+      provider: 'baidu'
     }
   },
   methods: {
+    /**
+     * 显示翻译 API 选择菜单
+     */
+    async showTranslationApiMenu() {
+      // 获取菜单弹出的位置
+      const rect = document.querySelector('#show-translation-api-menu-btn').getBoundingClientRect();
+      const result = await window.electronAPI.ipcRenderer.invoke('showTranslationApiMenu', {
+        x: rect.left,
+        y: rect.top + rect.height,
+        defaultLabel: this.providerName[this.provider]
+      });
+      // 如果直接关闭菜单，没有选择
+      if (result === null) return;
+      // 获取选择的提供商
+      Object.keys(this.providerName).forEach(key => {
+        if (this.providerName[key] === result) this.provider = key;
+      });
+      // 重新设置语言选择列表
+      this.setLanguageList(this.provider);
+    },
     /**
      * 删除已收藏的翻译记录
      * @returns {Promise<void|false>} 若无收藏 ID 或删除出错则返回 false，否则返回 void
@@ -130,7 +151,7 @@ export default {
         this.deleteFavorite();
       }else {
         // 设置翻译 API 提供商
-        this.translationResult.provider = this.$store.state.options.translationProvider;
+        this.translationResult.provider = this.provider;
         // 发送 IPC 请求
         const result = await window.electronAPI.ipcRenderer.invoke('addToFavorites', this.translationResult);
         // 是否添加成功
@@ -258,12 +279,12 @@ export default {
       this.favorite = false;
       this.favoriteId = null;
       // 如果没有填写 API 密钥就弹出提示
-      if (!this.available) {
+      if (!this.available[this.provider]) {
         window.electronAPI.ipcRenderer.invoke('dialog', {
           name: 'showMessageBox',
           options: {
             title: '没有填写 API 密钥',
-            message: `您还没有填写 ${this.providerName[this.$store.state.options.translationProvider]} 的 API 密钥信息，目前 ${this.providerName[this.$store.state.options.translationProvider]} 暂不可用，请在设置中填写 ${this.providerName[this.$store.state.options.translationProvider]} 的 API 密钥信息！`,
+            message: `您还没有填写 ${this.providerName[this.provider]} 的 API 密钥信息，目前 ${this.providerName[this.provider]} 暂不可用，请在设置中填写 ${this.providerName[this.provider]} 的 API 密钥信息！`,
             buttons: ['知道了'],
             type: 'info',
             noLink: true
@@ -304,7 +325,8 @@ export default {
         q: this.originalText,
         from: this.languageSelected1,
         to: this.languageSelected2,
-        options: this.$store.state.options
+        options: this.$store.state.options,
+        provider: this.provider
       };
       // 禁用翻译按钮
       this.disabledSubmitBtn = true;
@@ -493,53 +515,48 @@ export default {
     apiInit() {
       // 检查百度 API 密钥
       if (
-          this.$store.state.options.translationProvider === 'baidu' &&
           this.$store.state.options.baiduTranslationAppID !== '' &&
           this.$store.state.options.baiduTranslationApiKey !== ''
       ) {
-        this.available = true;
+        this.available.baidu = true;
       }
       // 检查腾讯 API 密钥
       if (
-          this.$store.state.options.translationProvider === 'tencent' &&
           this.$store.state.options.tencentOcrAppID !== '' &&
           this.$store.state.options.tencentOcrSecretID !== '' &&
           this.$store.state.options.tencentOcrSecretKey !== ''
       ) {
-        this.available = true;
+        this.available.tencent = true;
       }
       // 检查讯飞 API 密钥
       if (
-          this.$store.state.options.translationProvider === 'xunfei' &&
           this.$store.state.options.xunfeiOcrAPPId !== '' &&
           this.$store.state.options.xunfeiOcrAPISecret !== '' &&
           this.$store.state.options.xunfeiOcrAPIKey !== ''
       ) {
-        this.available = true;
+        this.available.xunfei = true;
       }
       // 检查有道 API 密钥
       if (
-          this.$store.state.options.translationProvider === 'youdao' &&
           this.$store.state.options.youdaoOcrAppID !== '' &&
           this.$store.state.options.youdaoOcrAppKey !== ''
       ) {
-        this.available = true;
+        this.available.youdao = true;
       }
       // 检查阿里 API 密钥
       if (
-          this.$store.state.options.translationProvider === 'ali' &&
           this.$store.state.options.aliyunAccessKeyID !== '' &&
           this.$store.state.options.aliyunAccessKeySecret !== ''
       ) {
-        this.available = true;
+        this.available.ali = true;
       }
-      // 如果没有填写 API 密钥就弹出提示
-      if (!this.available) {
+      // 如果当前使用的 API 还没有填写密钥就弹出提示
+      if (!this.available[this.provider]) {
         window.electronAPI.ipcRenderer.invoke('dialog', {
           name: 'showMessageBox',
           options: {
             title: '没有填写 API 密钥',
-            message: `您当前使用的翻译引擎是 ${this.providerName[this.$store.state.options.translationProvider]}，您还没有填写 ${this.providerName[this.$store.state.options.translationProvider]} 的 API 密钥信息，请在设置中填写 ${this.providerName[this.$store.state.options.translationProvider]} 的 API 密钥信息！`,
+            message: `您当前使用的翻译引擎是 ${this.providerName[this.provider]}，您还没有填写 ${this.providerName[this.provider]} 的 API 密钥信息，请在设置中填写 ${this.providerName[this.provider]} 的 API 密钥信息！`,
             buttons: ['知道了'],
             type: 'info',
             noLink: true
@@ -587,7 +604,7 @@ export default {
      const options = {
        languageSelected1: this.languageSelected1,
        languageSelected2: this.languageSelected2,
-       translationProvider: this.$store.state.options.translationProvider
+       provider: this.provider
      };
      localStorage.setItem('translationOptions', JSON.stringify(options));
     },
@@ -596,49 +613,84 @@ export default {
      * @returns {boolean}
      */
     getLastTranslationOptions() {
+      // 从 localStorage 读取翻译选项
       let options = localStorage.getItem('translationOptions');
       if (options === undefined || options === null) return false;
       options = JSON.parse(options);
-      if (options.translationProvider === this.$store.state.options.translationProvider) {
-        this.languageSelected1 = options.languageSelected1;
-        this.languageSelected2 = options.languageSelected2;
+      // 检查数据完整性
+      if (
+        options.languageSelected1 === undefined ||
+        options.languageSelected2 === undefined ||
+        options.provider === undefined
+      ) {
+        return false;
+      }
+      // 设置上次使用的提供商
+      this.provider = options.provider;
+      // 加载语言选择列表
+      this.setLanguageList(this.provider);
+      // 设置上次使用的语言
+      this.languageSelected1 = options.languageSelected1;
+      this.languageSelected2 = options.languageSelected2;
+      return true;
+    },
+    /**
+     * 根据 API 接口设置语言选择列表
+     * @param {String} provider 提供商
+     */
+    setLanguageList(provider = 'baidu') {
+      this.languageList1 = languageList[provider];
+      this.languageList2 = languageList[provider].filter(item => item.code !== 'auto');
+      // 根据提供商更改默认语言的选项
+      if (provider === 'xunfei') {
+        // 讯飞
+        this.languageSelected1 = 'en';
+        this.languageSelected2 = 'cn';
+      }else if (provider === 'youdao') {
+        // 有道
+        this.languageSelected1 = 'auto';
+        this.languageSelected2 = 'zh-CHS';
+      }else {
+        // 其它
+        this.languageSelected1 = 'auto';
+        this.languageSelected2 = 'zh';
       }
     }
   },
   created() {
     document.title = '翻译 - OCRanslate';
-    // 移除译文语言选择中的自动检测
-    if (this.languageList2[0].code === 'auto' || this.languageList2[0].name === '自动检测语言') {
-      this.languageList2.splice(0, 1);
-    }
-    // 如果是讯飞翻译就更改默认语言选项
-    if (this.$store.state.options.translationProvider === 'xunfei') {
-      this.languageSelected1 = 'en';
-      this.languageSelected2 = 'cn';
-    }
-    // 如果是有道翻译就更改默认语言选项
-    if (this.$store.state.options.translationProvider === 'youdao') {
-      this.languageSelected1 = 'auto';
-      this.languageSelected2 = 'zh-CHS';
-    }
 
+    // 如果路由中包含显示翻译结果
+    if (this.$route.query.type === '显示翻译结果') {
+      // 如果当前提供商不是快捷键翻译的提供商，或还没有加载语言列表就根据快捷键翻译的提供商加载语言列表
+      if (
+        this.provider !== this.$store.state.options.shortcutTranslationProvider ||
+        this.languageList1.length < 1 ||
+        this.languageList2.length < 1
+      ) {
+        this.provider = this.$store.state.options.shortcutTranslationProvider;
+        this.setLanguageList(this.provider);
+      }
+      this.showAutoTranslationResult();
+    }else {
+      // 尝试获取和设置上次使用的翻译选项
+      if (!this.getLastTranslationOptions()) {
+        // 如果没有数据或出错就根据默认的提供商加载语言选择列表
+        this.setLanguageList(this.provider);
+      }
+    }
+    
     // 初始化语音
     this.voice = new Voice({
       volume: this.$store.state.options.translationVoiceVolume / 10,
       speed: this.$store.state.options.translationVoiceSpeed
     });
 
-    // 获取上次使用的翻译设置
-    this.getLastTranslationOptions();
     // 检查 API 密钥
     this.apiInit();
     // 如果路由中包含 OCR 翻译
     if (this.$route.query.type === 'OCR翻译') {
       this.autoTranslation();
-    }
-    // 如果路由中包含显示翻译结果
-    if (this.$route.query.type === '显示翻译结果') {
-      this.showAutoTranslationResult();
     }
   },
   watch: {
@@ -687,6 +739,10 @@ export default {
 }
 #translation-page .toolbar button:hover {
   color: #409EFF;
+}
+/*API选择的按钮图标需要稍微加大一些*/
+#translation-page .toolbar .icon-app {
+  font-size: 18px;
 }
 /*语言选择区域*/
 #translation-page .toolbar .language-box {

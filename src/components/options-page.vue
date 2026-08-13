@@ -28,7 +28,7 @@
           <li><a href="javascript:;" @click="scrollToSection('#specific-area-title')">指定区域识别</a></li>
           <li><a href="javascript:;" @click="scrollToSection('#automation-title')">自动执行（用于手动选择图片和翻译）</a></li>
           <li><a href="javascript:;" @click="scrollToSection('#clipboard-translation-title')">自动翻译剪贴板的文字</a></li>
-          <li><a href="javascript:;" @click="scrollToSection('#auto-translation-language-title')">自动翻译语言设置</a></li>
+          <li><a href="javascript:;" @click="scrollToSection('#auto-translation-language-title')">快捷键翻译使用的翻译引擎和语言</a></li>
           <li><a href="javascript:;" @click="scrollToSection('#key-sound-title')">快捷键按键音效</a></li>
         </ul>
       </div>
@@ -160,21 +160,6 @@
           </div>
         </div>
         <div class="mb-4"></div>
-        <!--翻译引擎设置-->
-        <p class="mb-2" id="translation-provider-title"><b>翻译引擎设置</b></p>
-        <div aria-label="翻译引擎设置" role="group">
-          <div class="mb-3">
-            <label for="translation-provider" class="form-label">默认使用的翻译引擎</label>
-            <select aria-describedby="translation-provider-description" id="translation-provider" class="form-select" v-model="optionsSelected.translationProvider" @change="changeTranslationLanguageList(true)">
-              <option value="baidu">百度翻译</option>
-              <option value="tencent">腾讯翻译</option>
-              <option value="xunfei">讯飞翻译</option>
-              <option value="youdao">有道翻译</option>
-              <option value="ali">阿里翻译</option>
-            </select>
-            <p class="mt-3" id="translation-provider-description">设置翻译页面、OCR截图翻译、剪贴板翻译使用的翻译引擎。腾讯、讯飞、有道、阿里的 OCR 和翻译使用的是相同的密钥信息，只需要开通功能就可以使用了。</p>
-          </div>
-        </div>
         <!--OCR语音设置-->
         <p class="mb-2" id="ocr-volume-title"><b>OCR 语音朗读设置</b></p>
         <div aria-label="OCR语音朗读" role="group">
@@ -363,19 +348,30 @@
           <p class="mt-3" id="clipboard-translation-key-name-description">你可以在上方的表单中按下需要使用的按键来更改快捷键设置</p>
         </div>
         <div class="mb-4"></div>
-        <!--自动翻译语言设置-->
-        <p class="mb-2" id="auto-translation-language-title"><b>自动翻译语言设置</b></p>
-        <div aria-label="自动翻译语言设置" role="group">
+        <!--快捷键翻译的提供商和语言设置-->
+        <p class="mb-2" id="auto-translation-language-title"><b>快捷键翻译使用的翻译引擎和语言</b></p>
+        <div aria-label="快捷键翻译使用的翻译引擎和语言" role="group">
+          <div class="mb-3">
+            <label for="shortcut-translation-provider" class="form-label">翻译引擎</label>
+            <select aria-describedby="shortcut-translation-provider-description" id="shortcut-translation-provider" class="form-select" v-model="optionsSelected.shortcutTranslationProvider" @change="changeTranslationLanguageList(true)">
+              <option value="baidu">百度翻译</option>
+              <option value="tencent">腾讯翻译</option>
+              <option value="ali">阿里翻译</option>
+              <option value="xunfei">讯飞翻译</option>
+              <option value="youdao">有道翻译</option>
+            </select>
+          </div>
+          <p class="mt-3" id="shortcut-translation-provider-description">快捷键翻译和剪贴板翻译使用的翻译引擎</p>
           <div class="mb-3">
             <label for="auto-translation-language-selected1" class="form-label">原文默认语言</label>
-            <select aria-describedby="auto-translation-language-selected1-description" id="auto-translation-language-selected1" class="form-select" v-model="optionsSelected.autoTranslationLanguageSelected1">
+            <select aria-describedby="auto-translation-language-selected1-description" id="auto-translation-language-selected1" class="form-select" v-model="optionsSelected.shortcutTranslationLanguageSelected1">
               <option v-for="item of translationLanguageList1" :key="item.code" v-bind:value="item.code">{{item.name}}</option>
             </select>
           </div>
           <p class="mt-3" id="auto-translation-language-selected1-description">快捷键 OCR 识别自动翻译和剪贴板翻译的原文语言，不同的翻译引擎支持的语言数量也会不一样。</p>
           <div class="mb-3">
             <label for="auto-translation-language-selected2" class="form-label">译文默认语言</label>
-            <select aria-describedby="auto-translation-language-selected2-description" id="auto-translation-language-selected2" class="form-select" v-model="optionsSelected.autoTranslationLanguageSelected2">
+            <select aria-describedby="auto-translation-language-selected2-description" id="auto-translation-language-selected2" class="form-select" v-model="optionsSelected.shortcutTranslationLanguageSelected2">
               <option v-for="item of translationLanguageList2" :key="item.code" v-bind:value="item.code">{{item.name}}</option>
             </select>
           </div>
@@ -441,7 +437,6 @@ export default {
         aliyunAccessKeySecret: '',
         baiduTranslationAppID: '',
         baiduTranslationApiKey: '',
-        translationProvider: 'baidu',
         ocrVoiceSpeed: 2,
         ocrVoiceVolume: 10,
         ocrVoiceLibrarySelected: '',
@@ -473,8 +468,9 @@ export default {
         clipboardTranslation: false,
         clipboardTranslationKeyName: 'F4',
         keySound: true,
-        autoTranslationLanguageSelected1: 'auto',
-        autoTranslationLanguageSelected2: 'zh'
+        shortcutTranslationProvider: 'baidu',
+        shortcutTranslationLanguageSelected1: 'auto',
+        shortcutTranslationLanguageSelected2: 'zh'
       },
       voiceLibraryList: [],
       hotKeyFunction: [
@@ -511,32 +507,22 @@ export default {
   },
   methods: {
     /**
-     * 根据翻译引擎设置支持的语言列表
+     * 加载和设置快捷键翻译的语言列表
      * @param {boolean} translationProviderChange 是否是翻译引擎改变事件
      */
     changeTranslationLanguageList(translationProviderChange = false) {
-      this.translationLanguageList1 = translationLanguageList[this.optionsSelected.translationProvider];
-      this.translationLanguageList2 = [...translationLanguageList[this.optionsSelected.translationProvider]];
-      // 移除自动翻译默认译文选择中的自动检测
-      if (this.translationLanguageList2[0].code === 'auto' || this.translationLanguageList2[0].name === '自动检测语言') {
-        this.translationLanguageList2.splice(0, 1);
-      }
+      // 重新设置语言选择列表
+      this.translationLanguageList1 = translationLanguageList[
+        this.optionsSelected.shortcutTranslationProvider
+      ];
+      this.translationLanguageList2 = translationLanguageList[
+        this.optionsSelected.shortcutTranslationProvider
+      ].filter(item => item.code !== 'auto')
       // 如果是翻译引擎改变事件
       if (translationProviderChange) {
-        // 检查当前选择的翻译引擎是否支持原文语言设置
-        const languageSelect1 = this.translationLanguageList1.find(
-          item => item.code === this.optionsSelected.autoTranslationLanguageSelected1
-        );
-        if (languageSelect1 === undefined) {
-          this.optionsSelected.autoTranslationLanguageSelected1 = this.translationLanguageList1[0].code;
-        }
-        // 检查当前选择的翻译引擎是否支持译文语言设置
-        const languageSelect2 = this.translationLanguageList2.find(
-          item => item.code === this.optionsSelected.autoTranslationLanguageSelected2
-        );
-        if (languageSelect2 === undefined) {
-          this.optionsSelected.autoTranslationLanguageSelected2 = this.translationLanguageList2[0].code;
-        }
+        // 把默认选中的语言更改为语言选择列表的第一项
+        this.optionsSelected.shortcutTranslationLanguageSelected1 = this.translationLanguageList1[0].code;
+        this.optionsSelected.shortcutTranslationLanguageSelected2 = this.translationLanguageList2[0].code;
       }
     },
     /**
@@ -661,13 +647,13 @@ export default {
         return false;
       }
       // 检查自动翻译的语言设置，原文语言和译文语言是否相同
-      if (this.optionsSelected.autoTranslationLanguageSelected1 === this.optionsSelected.autoTranslationLanguageSelected2) {
+      if (this.optionsSelected.shortcutTranslationLanguageSelected1 === this.optionsSelected.shortcutTranslationLanguageSelected2) {
         await window.electronAPI.ipcRenderer.invoke('dialog', {
           name: 'showMessageBox',
           options: {
-            title: '自动翻译语言冲突',
-            message: '自动翻译的原文语言和译文语言不能使用同一种语言！',
-            buttons: ['关闭'],
+            title: '快捷键翻译语言冲突',
+            message: '快捷键翻译的原文语言和译文语言不能使用同一种语言！',
+            buttons: ['知道了'],
             type: 'error',
             noLink: true
           }
@@ -725,7 +711,7 @@ export default {
     this.optionsSelected = this.$store.state.options;
     // 加载语音库
     this.loadVoiceLibraryList();
-    // 根据翻译引擎设置支持的语言列表
+    // 加载和设置快捷键翻译的语言列表
     this.changeTranslationLanguageList(false);
   }
 }

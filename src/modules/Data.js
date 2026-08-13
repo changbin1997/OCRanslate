@@ -299,7 +299,6 @@ module.exports = class Data {
       aliyunAccessKeySecret: '',
       baiduTranslationAppID: '',
       baiduTranslationApiKey: '',
-      translationProvider: 'baidu',
       ocrVoiceSpeed: 2,
       ocrVoiceVolume: 10,
       ocrVoiceLibrarySelected: '',
@@ -331,8 +330,9 @@ module.exports = class Data {
       clipboardTranslation: false,
       clipboardTranslationKeyName: 'F4',
       keySound: true,
-      autoTranslationLanguageSelected1: 'auto',
-      autoTranslationLanguageSelected2: 'zh'
+      shortcutTranslationProvider: 'baidu',
+      shortcutTranslationLanguageSelected1: 'auto',
+      shortcutTranslationLanguageSelected2: 'zh'
     };
 
     // 获取选项的名称

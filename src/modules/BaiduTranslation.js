@@ -3,11 +3,17 @@ const querystring = require('querystring');
 const axios = require('axios').default;
 
 module.exports = class BaiduTranslation {
-  options = null;
-  data = null;
+  appid = '';
+  apiKey = '';
 
-  constructor(optionsObj) {
-    this.options = optionsObj;
+  /**
+   * 初始化百度翻译
+   * @param {string} appid 应用 ID
+   * @param {string} apiKey API 密钥
+   */
+  constructor(appid, apiKey) {
+    this.appid = appid;
+    this.apiKey = apiKey;
   }
 
   /**
@@ -17,7 +23,7 @@ module.exports = class BaiduTranslation {
    * @returns {string} 签名哈希值
    */
   signature(query, salt) {
-    const signature = this.options.baiduTranslationAppID + query + salt + this.options.baiduTranslationApiKey;
+    const signature = this.appid + query + salt + this.apiKey;
     const md5 = crypto.createHash('md5');
     return md5.update(signature).digest('hex');
   }
@@ -50,7 +56,7 @@ module.exports = class BaiduTranslation {
       q: q,
       from: from,
       to: to,
-      appid: this.options.baiduTranslationAppID,
+      appid: this.appid,
       salt: randerNum,
       sign: sign
     };

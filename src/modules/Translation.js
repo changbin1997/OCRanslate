@@ -20,17 +20,18 @@ module.exports = class Translation {
 
   /**
    * 根据配置的翻译服务提供商进行翻译
+   * @param {string} provider 翻译提供商
    * @param {string} q 要翻译的文本
    * @param {string} [from='auto'] 源语言，默认为自动识别
    * @param {string} [to='zh'] 目标语言，默认为中文
    * @returns {Promise<Object>} 返回翻译结果 Promise，成功时为 {result, data}，失败时为 {result, msg}
    */
-  async translation(q, from = 'auto', to = 'zh') {
+  async translation(provider = 'baidu', q, from = 'auto', to = 'zh') {
     // 根据设置的翻译接口调用翻译
-    const result = await this[this.options.translationProvider](q, from, to);
+    const result = await this[provider](q, from, to);
     // 如果翻译成功就添加翻译记录
     if (result.result === 'success') {
-      await this.data.addTranslationHistory(this.options.translationProvider, q.length);
+      await this.data.addTranslationHistory(provider, q.length);
     }
 
     return result;
@@ -46,6 +47,10 @@ module.exports = class Translation {
   async ali(q, from = 'auto', to = 'zh') {
     const aliyunAccessKeyID = this.options.aliyunAccessKeyID;
     const aliyunAccessKeySecret = this.options.aliyunAccessKeySecret;
+    // 如果没有填写 API 密钥
+    if (aliyunAccessKeyID === '' || aliyunAccessKeySecret === '') {
+      return {result: 'error', msg: '您还没有填写阿里云的 API 密钥信息！'};
+    }
     // 调用阿里翻译
     const aliyunTranslation = new AliyunTranslation(aliyunAccessKeyID, aliyunAccessKeySecret);
     return await aliyunTranslation.translateGeneral(q, from, to);
@@ -59,8 +64,14 @@ module.exports = class Translation {
    * @returns {Promise<Object>} 返回翻译结果 Promise
    */
   async baidu(q, from = 'auto', to = 'zh') {
-    const baiduTranslation = new BaiduTranslation(this.options);
-    return await  baiduTranslation.send(q, from, to);
+    const appid = this.options.baiduTranslationAppID;
+    const apiKey = this.options.baiduTranslationApiKey;
+    // 如果没有填写 API 密钥
+    if (appid === '' || apiKey === '') {
+      return {result: 'error', msg: '您还没有填写百度翻译的 API 密钥信息！'};
+    }
+    const baiduTranslation = new BaiduTranslation(appid, apiKey);
+    return await baiduTranslation.send(q, from, to);
   }
 
   /**
@@ -73,6 +84,10 @@ module.exports = class Translation {
   async youdao(q, from = 'auto', to = 'zh-CHS') {
     const appid = this.options.youdaoOcrAppID;
     const appkey = this.options.youdaoOcrAppKey;
+    // 检查 API
+    if (appid === '' || appkey === '') {
+      return {result: 'error', msg: '您还没有填写有道智云 API 信息！'};
+    }
     const youdaoTranslation = new YoudaoTranslation(appid, appkey);
     return youdaoTranslation.submit(q, from, to);
   }
@@ -88,6 +103,10 @@ module.exports = class Translation {
     const APPId = this.options.xunfeiOcrAPPId;
     const APISecret = this.options.xunfeiOcrAPISecret;
     const APIKey = this.options.xunfeiOcrAPIKey;
+    // 检查 API
+    if (APPId === '' || APISecret === '' || APIKey === '') {
+      return {result: 'error', msg: '您还没有填写讯飞翻译的 API 密钥信息！'};
+    }
     const xunfeiTranslation = new XunfeiTranslation(APPId, APISecret, APIKey);
     return xunfeiTranslation.submit(q, from, to);
   }
@@ -100,11 +119,17 @@ module.exports = class Translation {
    * @returns {Promise<Object>} 返回翻译结果 Promise，使用与百度翻译相同的格式
    */
   tencent(q, from = 'auto', to = 'zh') {
+    // 检查 API
+    const secretID = this.options.tencentOcrSecretID;
+    const secretKey = this.options.tencentOcrSecretKey;
+    if (secretID === '' || secretKey === '') {
+      return {result: 'error', msg: '您还没有填写腾讯翻译的 API 密钥信息！'};
+    }
     // 腾讯翻译 API 配置信息
     const clientConfig = {
       credential: {
-        secretId: this.options.tencentOcrSecretID,
-        secretKey: this.options.tencentOcrSecretKey
+        secretId: secretID,
+        secretKey: secretKey
       },
       region: this.options.tencentOcrRegionSelected
     };
