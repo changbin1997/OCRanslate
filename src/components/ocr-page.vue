@@ -244,6 +244,163 @@ export default {
       }
     },
     /**
+     * 处理页面粘贴事件，读取剪贴板中的图片并提交识别
+     * @description 不区分元素和位置，只要在 OCR 页面内按 Ctrl+V 且剪贴板中有 png/jpeg/jpg 图片就触发识别
+     * @param {ClipboardEvent} ev 剪贴板粘贴事件对象
+     * @returns {boolean} 剪贴板中存在支持的图片并开始识别返回 true，否则返回 false
+     */
+    pasteImage(ev) {
+      // 获取剪贴板数据
+      const clipboardData = ev.clipboardData || window.clipboardData;
+      // 无法获取剪贴板数据时直接忽略
+      if (clipboardData === undefined || clipboardData === null) return false;
+      // 从剪贴板中查找支持的图片
+      const imageFile = this.getImageFileFromClipboard(clipboardData);
+      // 剪贴板中没有支持的图片时忽略
+      if (imageFile === null) return false;
+      // 阻止默认粘贴行为，避免图片被粘贴到当前元素
+      ev.preventDefault();
+      ev.stopPropagation();
+      // 清空当前识别内容
+      if (!this.showGuide) this.clear();
+      // 检查当前 OCR API 是否可用
+      if (!this.apiAvailable()) return false;
+      // 将图片读取为 base64 后提交识别
+      const reader = new FileReader();
+      reader.onload = () => {
+        // 图片的 data URL，例如 data:image/png;base64,xxxx
+        const dataUrl = reader.result;
+        // 去掉 data URL 前缀，得到纯 base64 数据
+        const base64 = dataUrl.split(',')[1];
+        // 获取图片类型
+        const imgType = this.getImageType(imageFile);
+        // 提交识别
+        this.submitBase64(base64, imgType, dataUrl);
+      };
+      reader.readAsDataURL(imageFile);
+      return true;
+    },
+    /**
+     * 从剪贴板数据中查找支持的图片文件
+     * @param {DataTransfer} clipboardData 剪贴板数据对象
+     * @returns {File|null} 找到的图片文件，未找到返回 null
+     */
+    getImageFileFromClipboard(clipboardData) {
+      // 优先从剪贴板 items 中查找图片数据
+      const items = clipboardData.items || [];
+      for (let i = 0;i < items.length;i ++) {
+        // 只处理文件类型的剪贴板项
+        if (items[i].kind !== 'file') continue;
+        const file = items[i].getAsFile();
+        // 找到支持的图片
+        if (file !== null && this.isSupportedImageFile(file)) return file;
+      }
+      // 兜底从剪贴板 files 中查找图片文件
+      const files = clipboardData.files || [];
+      for (let i = 0;i < files.length;i ++) {
+        if (this.isSupportedImageFile(files[i])) return files[i];
+      }
+      return null;
+    },
+    /**
+     * 判断文件是否为支持的图片（png、jpeg、jpg）
+     * @param {File} file 要判断的文件对象
+     * @returns {boolean} 是支持的图片返回 true，否则返回 false
+     */
+    isSupportedImageFile(file) {
+      // 支持的图片 MIME 类型
+      const mimeList = ['image/png', 'image/jpeg', 'image/jpg'];
+      // 优先通过 MIME 类型判断
+      if (file.type !== '' && mimeList.includes(file.type.toLowerCase())) return true;
+      // MIME 类型为空时通过文件扩展名判断
+      const ext = this.getFileExtension(file.name);
+      return ['png', 'jpg', 'jpeg'].includes(ext);
+    },
+    /**
+     * 获取图片文件类型
+     * @param {File} file 图片文件对象
+     * @returns {string} 图片类型（png、jpg 或 jpeg），无法识别时默认为 png
+     */
+    getImageType(file) {
+      const mimeType = file.type.toLowerCase();
+      // 根据 MIME 类型获取图片类型
+      if (mimeType === 'image/png') return 'png';
+      if (mimeType === 'image/jpeg' || mimeType === 'image/jpg') return 'jpeg';
+      // MIME 类型为空时通过文件扩展名获取图片类型
+      const ext = this.getFileExtension(file.name);
+      return ['png', 'jpg', 'jpeg'].includes(ext) ? ext : 'png';
+    },
+    /**
+     * 获取文件名的小写扩展名（不包含点）
+     * @param {string} fileName 文件名
+     * @returns {string} 小写扩展名，没有扩展名时返回空字符串
+     */
+    getFileExtension(fileName) {
+      if (fileName === '') return '';
+      const index = fileName.lastIndexOf('.');
+      return index < 0 ? '' : fileName.slice(index + 1).toLowerCase();
+    },
+    /**
+     * 提交剪贴板图片的 base64 数据并执行 OCR 识别流程
+     * @param {string} base64 图片的纯 base64 数据
+     * @param {string} imgType 图片类型（png、jpg 或 jpeg）
+     * @param {string} dataUrl 图片的 data URL，用于显示和离线识别
+     * @returns {Promise<void|false>} 识别出错返回 false，否则无返回值
+     */
+    async submitBase64(base64, imgType, dataUrl) {
+      // 记住当前使用的 API 接口，下次可以自动选中
+      this.setLastOcrAPI();
+      // 清除 vuex 存储的自动执行
+      this.$store.commit('changeAuto', '');
+      // 显示图片
+      this.showGuide = false;
+      this.imgOptions.url = dataUrl;
+      this.imgOptions.show = true;
+      // 要提交的数据
+      const submitData = {
+        type: this.ocrTypeSelectde,
+        base64File: base64,
+        options: this.$store.state.options,
+        imgType: imgType
+      };
+      // 获取 OCR 提供商
+      this.ocrType.forEach(item => {
+        if (item.name === this.ocrTypeSelectde) submitData.provider = item.provider;
+      });
+      // TesseractOCR 需要传入完整的图片 data URL 才能识别
+      if (submitData.provider === 'tesseract') {
+        submitData.base64File = dataUrl;
+      }
+      // 提交
+      const result = await window.electronAPI.ipcRenderer.invoke('ocr', submitData);
+      // 出错
+      if (result.result !== 'success') {
+        await window.electronAPI.ipcRenderer.invoke('dialog', {
+          name: 'showMessageBox',
+          options: {
+            title: 'OCR识别错误',
+            message: result.msg,
+            buttons: ['关闭'],
+            type: 'error',
+            noLink: true
+          }
+        });
+        // 清除图片
+        this.clear();
+        return false;
+      }
+      // 把识别结果数组用换行符分隔转换为字符串
+      this.ocrText = result.list.join("\n");
+      this.announce = result.list.join('<br />');
+      // 如果开启了自动朗读就朗读 OCR 文字
+      if (this.$store.state.options.ocrAutoVoice) {
+        this.startVoice();
+      }else if (this.$store.state.options.autoTranslation) {
+        // 如果开启了自动翻译就转到翻译页
+        this.toTranslationPage();
+      }
+    },
+    /**
      * 清除当前识别结果、图片显示与自动执行状态
      * @returns {void}
      */
@@ -252,7 +409,8 @@ export default {
       this.imgOptions.url = '';
       this.imgOptions.show = false;
       this.showGuide = true;
-      this.voice.stop();
+      // 语音实例未初始化时跳过，避免报错
+      if (this.voice !== null && this.voice !== undefined) this.voice.stop();
       this.$store.commit('changeAuto', '');
       this.announce = '';
     },
@@ -478,6 +636,15 @@ export default {
     }
     // 设置上次使用的 OCR API
     this.getLastOcrAPI();
+    // 监听页面粘贴事件，读取剪贴板中的图片进行识别
+    document.addEventListener('paste', this.pasteImage);
+  },
+  /**
+   * 页面销毁前移除粘贴事件监听，避免其它页面触发粘贴识别
+   * @returns {void}
+   */
+  beforeDestroy() {
+    document.removeEventListener('paste', this.pasteImage);
   },
   watch: {
     // 等 App 获取选项数据并传到 Vuex 才会执行
