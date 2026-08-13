@@ -22,19 +22,47 @@ export default class Voice {
     if (config.voiceLibrary !== undefined) this.voiceLibraryName = config.voiceLibrary;
     // 初始化语音合成对象
     this.synth = window.speechSynthesis;
-    // 延迟获取语音库
-    let voiceLibraryList = null;
+    // 延迟获取语音库（浏览器异步加载发音人列表）
     setTimeout(() => {
-      voiceLibraryList = this.synth.getVoices();
-      if (this.voiceLibraryName !== '') {
-        // 找出设置的语音库
-        this.voiceLibrary = voiceLibraryList.find(item => item.name === this.voiceLibraryName);
-      }else {
-        // 找出中文语音库
-        this.voiceLibrary = voiceLibraryList.find(item => item.name === 'zh-CN' || item.name === 'zh-TW');
-      }
+      this.resolveVoiceLibrary();
     }, 200);
+    // 发音人列表加载完成时再次解析
+    if (typeof this.synth.addEventListener === 'function') {
+      this.synth.addEventListener('voiceschanged', () => {
+        this.resolveVoiceLibrary();
+      });
+    }
     this.utterThis = new SpeechSynthesisUtterance();
+  }
+
+  /**
+   * 解析语音库：优先使用指定发音人，否则自动查找支持中文的发音人
+   * @returns {SpeechSynthesisVoice|undefined} 找到的发音人
+   */
+  resolveVoiceLibrary() {
+    const voiceLibraryList = this.synth.getVoices();
+    if (this.voiceLibraryName !== '') {
+      // 找出设置的语音库
+      this.voiceLibrary = voiceLibraryList.find(item => item.name === this.voiceLibraryName);
+    } else {
+      // 自动查找支持中文的语音库
+      this.voiceLibrary = this.findChineseVoice(voiceLibraryList);
+    }
+    return this.voiceLibrary;
+  }
+
+  /**
+   * 查找支持中文的发音人
+   * @param {SpeechSynthesisVoice[]} voiceLibraryList 发音人列表
+   * @returns {SpeechSynthesisVoice|undefined} 找到的中文发音人
+   */
+  findChineseVoice(voiceLibraryList) {
+    const isChinese = (item) => /^(zh|cmn)([-_]|$)/i.test(item.lang || '');
+    // 优先匹配简体中文
+    return (
+      voiceLibraryList.find(item => /^zh[-_]?CN$/i.test(item.lang || '')) ||
+      voiceLibraryList.find(isChinese)
+    );
   }
 
   /**
@@ -83,6 +111,10 @@ export default class Voice {
     this.utterThis.text = options.text;
     // 是否有合适的语音库
     if (this.voiceLibrary === undefined || this.voiceLibrary === null) {
+      // 再尝试解析一次（防止 start 在延迟获取完成前被调用）
+      this.resolveVoiceLibrary();
+    }
+    if (this.voiceLibrary === undefined || this.voiceLibrary === null) {
       if (typeof options.error === "function") {
         options.error('您的电脑上没有合适的语音库！');
       }
@@ -96,8 +128,6 @@ export default class Voice {
     this.utterThis.rate = this.speed;
     // 设置音调为中等
     this.utterThis.pitch = 1;
-    // 开始朗读
-    this.synth.speak(this.utterThis);
     // 朗读已开始
     this.utterThis.onstart = () => {
       if (typeof options.start === "function") {
@@ -110,6 +140,8 @@ export default class Voice {
         options.stop();
       }
     }
+    // 开始朗读
+    this.synth.speak(this.utterThis);
   }
 
   /**
