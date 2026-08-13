@@ -655,6 +655,8 @@ export default {
         this.languageSelected1 = 'auto';
         this.languageSelected2 = 'zh';
       }
+      // 设置标题栏
+      document.title = `翻译 - ${this.providerName[this.provider]} - OCRanslate`;
     }
   },
   created() {

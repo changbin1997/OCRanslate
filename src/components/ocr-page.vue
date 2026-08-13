@@ -26,7 +26,7 @@
       <div class="ocr-type-select">
         <label for="ocr-type-select" class="form-label me-2 mb-0">识别接口</label>
         <div>
-          <select v-model="ocrTypeSelectde" class="form-select-sm form-select" id="ocr-type-select" aria-label="识别接口">
+          <select @change="changeTitle" v-model="ocrTypeSelectde" class="form-select-sm form-select" id="ocr-type-select" aria-label="识别接口">
             <option v-for="item of ocrType" :key="item.name" v-bind:value="item.name">{{item.name}}</option>
           </select>
         </div>
@@ -90,6 +90,12 @@ export default {
     }
   },
   methods: {
+    /**
+     * API 改变时，改变标题栏的标题
+     */
+    changeTitle() {
+      document.title = `OCR文字识别 - ${this.ocrTypeSelectde} - OCRanslate`;
+    },
     /**
      * 显示导出菜单
      * @description 如果有识别结果和图片，则获取导出按钮位置并发送导出菜单事件到主进程
@@ -453,6 +459,8 @@ export default {
       if (api === null || api === undefined) return false;
       api = JSON.parse(api);
       this.ocrTypeSelectde = api.name;
+      // 设置标题栏
+      this.changeTitle();
     }
   },
   created() {
