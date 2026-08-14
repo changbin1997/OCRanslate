@@ -1,6 +1,6 @@
 const Ocr = require('./Ocr');
 const screenshotDesktop = require('screenshot-desktop');
-const jimp = require('jimp');
+const {nativeImage} = require('electron');
 const selectorWindow = require('./selector-window');
 
 module.exports = class ScreenshotOcr {
@@ -92,12 +92,24 @@ module.exports = class ScreenshotOcr {
     let img = null;
     try {
       // 截图
-      img = await screenshotDesktop();
-      // 裁剪图片
-      img = await jimp.read(img);
-      img = await img.crop(left, top, width, height);
-      img = await img.getBufferAsync(jimp.MIME_JPEG);
-      img = img.toString('base64');
+      const screenshot = await screenshotDesktop();
+      // 使用 electron nativeImage 创建图片
+      const image = nativeImage.createFromBuffer(screenshot);
+      if (image.isEmpty()) {
+        throw new Error('截图数据无效');
+      }
+      // 校验裁剪区域
+      const size = image.getSize();
+      if (
+        left < 0 || top < 0 ||
+        width <= 0 || height <= 0 ||
+        left + width > size.width ||
+        top + height > size.height
+      ) {
+        throw new Error('裁剪区域超出截图范围');
+      }
+      // 裁剪图片并转换为 JPEG base64
+      img = image.crop({x: left, y: top, width, height}).toJPEG(100).toString('base64');
     } catch (error) {
       return { result: 'error', msg: error.message };
     }
