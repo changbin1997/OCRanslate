@@ -121,7 +121,6 @@
     "axios": "^0.27.2",
     "screenshot-desktop": "^1.15.0",
     "sqlite3": "^5.0.10",
-    "tencentcloud-sdk-nodejs": "^4.0.383",
     "tesseract.js": "^7.0.0"
   }
 }

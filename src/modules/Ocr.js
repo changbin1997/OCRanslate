@@ -1,4 +1,3 @@
-const OcrClient = require('tencentcloud-sdk-nodejs').ocr.v20181119.Client;
 const TesseractOcr = require('./TesseractOcr');
 const fs = require('fs');
 const path = require('path');
@@ -7,6 +6,7 @@ const XunfeiOcr = require('./XunfeiOcr');
 const YoudaoOcr = require('./YoudaoOcr');
 const AliyunOCR = require('./AliyunOCR');
 const BaiduOcr = require('./BaiduOcr');
+const TencentOcr = require('./TencentOcr');
 
 module.exports = class Ocr {
   options = null;
@@ -52,62 +52,31 @@ module.exports = class Ocr {
    * @returns {Promise<Object>} 返回 {result, list/msg} 对象的 Promise
    */
   tencent(type, base64File) {
-    const client = new OcrClient({
-      credential: {
-        secretId: this.options.tencentOcrSecretID,
-        secretKey: this.options.tencentOcrSecretKey
-      },
-      region: this.options.tencentOcrRegionSelected,
-      profile: {
-        httpProfile: {
-          reqTimeout: 15000
-        }
-      }
-    });
+    const tencentOcr = new TencentOcr(
+      this.options.tencentOcrSecretID,
+      this.options.tencentOcrSecretKey,
+      this.options.tencentOcrRegionSelected
+    );
+    const requests = {
+      '腾讯云通用印刷体识别': () => tencentOcr.GeneralBasicOCR(base64File, this.options.tencentOcrLanguageSelected),
+      '腾讯云通用印刷体识别（高精度版）': () => tencentOcr.GeneralAccurateOCR(base64File),
+      '腾讯云通用手写体识别': () => tencentOcr.GeneralHandwritingOCR(base64File),
+      '腾讯云广告文字识别': () => tencentOcr.AdvertiseOCR(base64File),
+      '腾讯云通用印刷体识别（精简版）': () => tencentOcr.GeneralEfficientOCR(base64File),
+      '腾讯云通用印刷体识别（高速版）': () => tencentOcr.GeneralFastOCR(base64File)
+    };
 
-    return new Promise(resolve => {
-      // 用来存储识别结果
-      let result = null;
-      // 根据传入的识别类型调用识别
-      switch (type) {
-        case '腾讯云通用印刷体识别':
-          result = client.GeneralBasicOCR({
-            ImageBase64: base64File,
-            LanguageType: this.options.tencentOcrLanguageSelected
-          });
-          break;
-        case '腾讯云通用印刷体识别（高精度版）':
-          result = client.GeneralAccurateOCR({ImageBase64: base64File});
-          break;
-        case '腾讯云通用手写体识别':
-          result = client.GeneralHandwritingOCR({ImageBase64: base64File});
-          break;
-        case '腾讯云广告文字识别':
-          result = client.AdvertiseOCR({ImageBase64: base64File});
-          break;
-        case '腾讯云通用印刷体识别（精简版）':
-          result = client.GeneralEfficientOCR({ImageBase64: base64File});
-          break;
-        case '腾讯云通用印刷体识别（高速版）':
-          result = client.GeneralFastOCR({ImageBase64: base64File});
-          break;
-        default:
-          resolve({result: 'error', msg: '不支持的 API 接口！'});
-          return false;
-      }
+    if (!Object.prototype.hasOwnProperty.call(requests, type)) {
+      return Promise.resolve({result: 'error', msg: '不支持的 API 接口！'});
+    }
 
-      result.then(async data => {
-        // 添加 OCR 历史记录
+    const request = requests[type]();
+
+    return request.then(async result => {
+      if (result.result === 'success') {
         await this.data.addOcrHistory('tencent', type);
-        // 把识别结果封装为数组返回
-        const resultList = [];
-        data.TextDetections.forEach(item => {
-          resultList.push(item.DetectedText);
-        });
-        resolve({ result: 'success', list: resultList });
-      }).catch(error => {
-        resolve({result: 'error', msg: `${error.code} ${error.message}`});
-      });
+      }
+      return result;
     });
   }
 
