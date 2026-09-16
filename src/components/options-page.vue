@@ -486,7 +486,8 @@ export default {
         {provider: 'youdao', name: '有道智云通用文字识别'},
         {provider: 'ali', name: '阿里云通用文字识别'},
         {provider: 'ali', name: '阿里云全文识别高精版'},
-        {provider: 'tesseract', name: 'TesseractOCR（离线识别）'}
+        {provider: 'tesseract', name: 'TesseractOCR（离线识别）'},
+        {provider: 'tesseractSystem', name: 'TesseractOCR（离线识别，调用设备上的 TesseractOCR）'}
       ],
       synth: null,
       disabledSaveBtn: false,

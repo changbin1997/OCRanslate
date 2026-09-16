@@ -158,6 +158,16 @@ module.exports = class Ocr {
   }
 
   /**
+   * 使用设备上安装的 TesseractOCR 程序进行文字识别
+   * @param {string} img 图片的 base64 数据或 data URL
+   * @returns {Promise<Object>} 返回 {result, list/msg} 对象的 Promise
+   */
+  async recognizeSystem(img) {
+    const tesseractOcr = new TesseractOcr();
+    return await tesseractOcr.recognizeSystem(img, this.options.tesseractOcrLanguageSelected);
+  }
+
+  /**
    * 使用 Tesseract 进行文字识别
    * @param {string} img 图片路径或数据
    * @returns {Promise<Object>} 返回识别结果 Promise

@@ -1,6 +1,9 @@
 const Tesseract = require('tesseract.js');
 const fs = require('fs');
 const path = require('path');
+const { execFile } = require('child_process');
+const { promisify } = require('util');
+const execFileAsync = promisify(execFile);
 const ocrLanguageList = require('./ocr-language-list');
 const shell = require('electron').shell;
 
@@ -103,4 +106,43 @@ module.exports = class TesseractOcr {
       return {result: 'error', msg: error.message};
     }
   }
+
+  /**
+   * 使用设备上安装的 TesseractOCR 程序识别图片中的文字
+   * @param {string} img 图片的 base64 数据或 data URL
+   * @param {string} [language='chi_sim'] 识别语言，默认为简体中文
+   * @returns {Promise<{result: string, list?: string[], msg?: string}>} 返回识别结果，成功时 result 为 'success' 并包含文字列表，失败时 result 为 'error' 并包含错误信息
+   */
+  async recognizeSystem(img, language = 'chi_sim') {
+    // 是否是支持的语言
+    const languageItem = ocrLanguageList.tesseract.find(item => item.code === language);
+    if (languageItem === undefined) return {result: 'error', msg: `不支持的语言 ${language}`};
+
+    // 兼容 data URL，提取实际的图片数据
+    const imageData = img.replace(/^data:image\/[a-zA-Z+.-]+;base64,/, '');
+    if (!imageData) return {result: 'error', msg: '图片数据无效'};
+
+    // 在项目目录中创建临时图片文件，避免管道在某些环境下阻塞
+    const tempFile = path.join(process.cwd(), `ocranslate-${Date.now()}-${Math.random().toString(36).slice(2)}.png`);
+    try {
+      fs.writeFileSync(tempFile, Buffer.from(imageData, 'base64'));
+      const {stdout} = await execFileAsync('tesseract', [
+        tempFile, 'stdout', '-l', language, '--psm', '3'
+      ], {encoding: 'buffer', maxBuffer: 10 * 1024 * 1024});
+
+      const list = stdout.toString('utf8').split(/\r?\n/).map(line => line.trim()).filter(line => line !== '');
+      return {result: 'success', list: list};
+    }catch (error) {
+      if (error.code === 'ENOENT') {
+        return {result: 'error', msg: '未找到 TesseractOCR 程序，请确认已安装并在 PATH 中'};
+      }
+      return {result: 'error', msg: error.message};
+    }finally {
+      // 无论识别是否成功，都清理临时图片文件
+      try {
+        fs.unlinkSync(tempFile);
+      }catch (_) {}
+    }
+  }
+
 }
