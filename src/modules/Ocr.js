@@ -1,5 +1,3 @@
-const AipOcrClient = require('baidu-aip-sdk').ocr;
-const HttpClient = require('baidu-aip-sdk').HttpClient;
 const OcrClient = require('tencentcloud-sdk-nodejs').ocr.v20181119.Client;
 const TesseractOcr = require('./TesseractOcr');
 const fs = require('fs');
@@ -8,6 +6,7 @@ const Data = require('./Data');
 const XunfeiOcr = require('./XunfeiOcr');
 const YoudaoOcr = require('./YoudaoOcr');
 const AliyunOCR = require('./AliyunOCR');
+const BaiduOcr = require('./BaiduOcr');
 
 module.exports = class Ocr {
   options = null;
@@ -29,55 +28,20 @@ module.exports = class Ocr {
    * @returns {Promise<Object>} 返回 {result, list/msg} 对象的 Promise
    */
   baidu(type, base64File) {
-    // 配置百度 SDK 的网络
-    HttpClient.setRequestOptions({timeout: 15000});
+    if (type !== '百度云通用文字识别（标准版）' && type !== '百度云通用文字识别（高精度版）') {
+      return Promise.resolve({result: 'error', msg: '不支持的 API 接口！'});
+    }
 
-    const client = new AipOcrClient(this.options.baiduOcrAppID, this.options.baiduOcrApiKey, this.options.baiduOcrSecretKey);
-    // 调整返回的内容
-    return new Promise((resolve) => {
-      let result = null;
-      if (type === '百度云通用文字识别（标准版）') {
-        // 通用文字识别
-        result = client.generalBasic(base64File, {
-          language_type: this.options.baiduOcrLanguageSelected
-        });
-      } else if (type === '百度云通用文字识别（高精度版）') {
-        result = client.accurateBasic(base64File, {
-          language_type: this.options.baiduOcrLanguageSelected
-        });
-      }else {
-        resolve({result: 'error', msg: '不支持的 API 接口！'});
-        return false;
-      }
+    const baiduOcr = new BaiduOcr(this.options.baiduOcrApiKey, this.options.baiduOcrSecretKey);
+    const request = type === '百度云通用文字识别（标准版）' ?
+      baiduOcr.generalBasic(base64File, this.options.baiduOcrLanguageSelected) :
+      baiduOcr.accurateBasic(base64File, this.options.baiduOcrLanguageSelected);
 
-      result.then(async data => {
-        // 是否出错
-        if (data.error_msg !== undefined && data.error_code !== undefined) {
-          resolve({result: 'error', msg: `${data.error_code} ${data.error_msg}`});
-          return false;
-        }
-
-        // 添加 OCR 历史记录
+    return request.then(async result => {
+      if (result.result === 'success') {
         await this.data.addOcrHistory('baidu', type);
-        // 只返回识别内容数组
-        const resultList = [];
-        data.words_result.forEach(item => {
-          resultList.push(item.words);
-        });
-        // 如果没有识别到文字就不返回识别内容
-        if (resultList.length < 1) {
-          resolve({result: 'error', msg: '没有识别到任何文字！'});
-        }else {
-          resolve({result: 'success', list: resultList});
-        }
-      }).catch(error => {
-        // 是否请求到百度服务器
-        if (error.error_msg !== undefined && error.error_code !== undefined) {
-          resolve({result: 'error', msg: `${error.error_code} ${error.error_msg}`});
-        }else {
-          resolve({result: 'error', msg: '无法访问百度 API 服务器！'});
-        }
-      })
+      }
+      return result;
     });
   }
 
