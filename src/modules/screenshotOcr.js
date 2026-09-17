@@ -13,7 +13,8 @@ module.exports = class ScreenshotOcr {
     youdao: false,
     ali: false,
     tesseract: true,
-    tesseractSystem: true
+    tesseractSystem: true,
+    paddle: true
   };
   // OCR 提供商名称
   providerList = {
@@ -23,7 +24,8 @@ module.exports = class ScreenshotOcr {
     youdao: '有道',
     ali: '阿里',
     tesseract: 'Tesseract',
-    tesseractSystem: 'TesseractOCR'
+    tesseractSystem: 'TesseractOCR',
+    paddle: 'PaddleOCR'
   };
 
   /**
@@ -124,6 +126,9 @@ module.exports = class ScreenshotOcr {
     } else if (provider === 'tesseractSystem') {
       // 设备上安装的 TesseractOCR
       result = await ocr.recognizeSystem(`data:image/png;base64,${img}`);
+    } else if (provider === 'paddle') {
+      // PaddleOCR 离线识别
+      result = await ocr.paddle(img);
     } else {
       // 其它 OCR
       result = await ocr[provider](ocrType, img);
@@ -162,6 +167,9 @@ module.exports = class ScreenshotOcr {
       result = await ocr.tesseract(`data:image/png;base64,${img}`);
     } else if (provider === 'tesseractSystem') {
       result = await ocr.recognizeSystem(`data:image/png;base64,${img}`);
+    } else if (provider === 'paddle') {
+      // PaddleOCR 离线识别
+      result = await ocr.paddle(img);
     } else {
       result = await ocr[provider](ocrType, img);
     }

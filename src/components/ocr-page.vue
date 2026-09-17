@@ -70,7 +70,8 @@ export default {
         {provider: 'ali', name: '阿里云通用文字识别'},
         {provider: 'ali', name: '阿里云全文识别高精版'},
         {provider: 'tesseract', name: 'TesseractOCR（离线识别）'},
-        {provider: 'tesseractSystem', name: 'TesseractOCR（离线识别，调用设备上的 TesseractOCR）'}
+        {provider: 'tesseractSystem', name: 'TesseractOCR（离线识别，调用设备上的 TesseractOCR）'},
+        {provider: 'paddle', name: 'PaddleOCR（离线识别）'}
       ],
       ocrTypeSelectde: '百度云通用文字识别（标准版）',
       showGuide: true,
@@ -86,7 +87,8 @@ export default {
         youdao: false, 
         ali: false, 
         tesseract: true,
-        tesseractSystem: true
+        tesseractSystem: true,
+        paddle: true
       },
       announce: ''
     }
@@ -546,7 +548,7 @@ export default {
      * @returns {boolean} 若当前选择的提供商可用则返回 true，否则返回 false
      */
     apiAvailable() {
-      const providerName = {baidu: '百度', tencent: '腾讯', xunfei: '讯飞', youdao: '有道', ali: '阿里', tesseract: 'Tesseract', tesseractSystem: 'TesseractOCR'};
+      const providerName = {baidu: '百度', tencent: '腾讯', xunfei: '讯飞', youdao: '有道', ali: '阿里', tesseract: 'Tesseract', tesseractSystem: 'TesseractOCR', paddle: 'PaddleOCR'};
       let status = true;
       // 获取 OCR 提供商
       for (let i = 0;i < this.ocrType.length;i ++) {

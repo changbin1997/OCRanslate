@@ -388,6 +388,9 @@ module.exports = class MyApp {
       }else if (args.provider === 'tesseractSystem') {
         // 设备上安装的 TesseractOCR
         return await ocr.recognizeSystem(args.base64File);
+      }else if (args.provider === 'paddle') {
+        // PaddleOCR 离线识别
+        return await ocr.paddle(args.base64File);
       }else {
         return await ocr[args.provider](args.type, args.base64File);
       }

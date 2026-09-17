@@ -27,3 +27,6 @@ pnpm-debug.log*
 /dist_electron
 
 /tessdata/*.traineddata
+
+# PaddleOCR 模型文件
+/paddleocr/

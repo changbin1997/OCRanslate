@@ -53,6 +53,9 @@
     "copyright": "Copyright © changbin1997",
     "compression": "maximum",
     "asar": true,
+    "asarUnpack": [
+      "node_modules/**"
+    ],
     "win": {
       "target": "nsis",
       "legalTrademarks": "changbin1997",
@@ -104,6 +107,18 @@
         "to": "resources/app.asar.unpacked/node_modules/screenshot-desktop/lib/win32/app.manifest"
       },
       {
+        "from": "paddleocr/PP-OCRv6_tiny_det.ort",
+        "to": "paddleocr/PP-OCRv6_tiny_det.ort"
+      },
+      {
+        "from": "paddleocr/PP-OCRv6_tiny_rec.ort",
+        "to": "paddleocr/PP-OCRv6_tiny_rec.ort"
+      },
+      {
+        "from": "paddleocr/ppocrv6_tiny_dict.txt",
+        "to": "paddleocr/ppocrv6_tiny_dict.txt"
+      },
+      {
         "from": "tessdata/chi_sim.traineddata",
         "to": "tessdata/chi_sim.traineddata"
       },
@@ -119,6 +134,9 @@
   },
   "dependencies": {
     "axios": "^0.27.2",
+    "node-fetch": "^2.7.0",
+    "onnxruntime-node": "^1.30.0",
+    "ppu-paddle-ocr": "^6.6.0",
     "screenshot-desktop": "^1.15.0",
     "sqlite3": "^5.0.10",
     "tesseract.js": "^7.0.0"

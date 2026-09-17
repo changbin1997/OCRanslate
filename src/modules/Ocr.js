@@ -1,4 +1,5 @@
 const TesseractOcr = require('./TesseractOcr');
+const PaddleOcr = require('./PaddleOcr');
 const fs = require('fs');
 const path = require('path');
 const Data = require('./Data');
@@ -175,6 +176,18 @@ module.exports = class Ocr {
   async tesseract(img) {
     const tesseractOcr = new TesseractOcr();
     const result = await tesseractOcr.recognize(img, this.options.tesseractOcrLanguageSelected);
+
+    return result;
+  }
+
+  /**
+   * 使用 PaddleOCR 进行离线文字识别
+   * @param {string} img 图片的 base64 数据
+   * @returns {Promise<{result: string, list?: string[], msg?: string}>} 返回 {result, list/msg} 对象的 Promise
+   */
+  async paddle(img) {
+    const paddleOcr = new PaddleOcr();
+    const result = await paddleOcr.recognize(img);
 
     return result;
   }
